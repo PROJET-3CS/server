@@ -13,6 +13,14 @@ export class UserController {
   public async create(@Body() body) {
     console.log(body);
 
+<<<<<<< HEAD
     await this.usersService.create(body);
   }
+=======
+    @Post()
+    public async signin(@Body() body, @Res() res) {
+          await this.usersService.create(body);
+
+      }
+>>>>>>> a525e3f83316f618a555ef77a3fb5b6da601db55
 }
