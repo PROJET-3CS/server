@@ -14,6 +14,7 @@ public id: number;
   @Column
   name: string;
 
+
   @Column
   age: number;
 

@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { Login } from '../auth/models/login.model';
 import { User } from './user.entity';
+import { compare } from 'bcryptjs';
 
 @Injectable()
 export class UserService  {
@@ -12,4 +14,19 @@ export class UserService  {
     public async create(user: any): Promise<User> {
             return await this.userRepository.create(user)
     }
+
+    async login(loginObject: any): Promise<User> {
+        const { name } = loginObject;
+    
+        const user = await this.userRepository.findOne( name );
+
+        console.log(user);
+        
+
+        if(!user) console.log('success');
+        
+        // }
+    
+        return user;
+      }
 }

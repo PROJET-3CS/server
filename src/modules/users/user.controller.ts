@@ -7,9 +7,7 @@ export class UserController {
 
 
     @Post()
-    public async create(@Body() body) {
-        console.log(body);
-        
+    public async signin(@Body() body, @Res() res) {
           await this.usersService.create(body);
 
       }
