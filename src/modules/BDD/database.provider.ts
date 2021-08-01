@@ -5,7 +5,6 @@ export const databaseProvider = {
   provide: "SequelizeInstance",
   useFactory: async () => {
     let config;
-    console.log(process.env);
 
     switch (process.env.NODE_ENV) {
       case "development":
@@ -35,7 +34,7 @@ export const databaseProvider = {
 
     const sequelize = new Sequelize(config);
     sequelize.addModels([User]);
-    sequelize.sync({ force: true });
+    // sequelize.sync({ force: true });
     return sequelize;
   },
 };
