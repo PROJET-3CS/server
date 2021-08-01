@@ -1,4 +1,4 @@
-import { Model } from 'sequelize-typescript';
+import { Model } from "sequelize-typescript";
 export declare class User extends Model {
     id: number;
     name: string;

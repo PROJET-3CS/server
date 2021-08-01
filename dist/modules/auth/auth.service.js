@@ -8,30 +8,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
-const sequelize_typescript_1 = require("sequelize-typescript");
-let User = class User extends sequelize_typescript_1.Model {
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
 };
-__decorate([
-    sequelize_typescript_1.Column({
-        allowNull: false,
-        autoIncrement: true,
-        unique: true,
-        primaryKey: true,
-    }),
-    __metadata("design:type", Number)
-], User.prototype, "id", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", String)
-], User.prototype, "name", void 0);
-__decorate([
-    sequelize_typescript_1.Column,
-    __metadata("design:type", Number)
-], User.prototype, "age", void 0);
-User = __decorate([
-    sequelize_typescript_1.Table
-], User);
-exports.User = User;
-//# sourceMappingURL=user.entity.js.map
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.AuthService = void 0;
+const common_1 = require("@nestjs/common");
+let AuthService = class AuthService {
+    constructor(userRepository, sequelizeInstance) {
+        this.userRepository = userRepository;
+        this.sequelizeInstance = sequelizeInstance;
+    }
+    async create(user) {
+        return await this.userRepository.create(user);
+    }
+};
+AuthService = __decorate([
+    common_1.Injectable(),
+    __param(0, common_1.Inject('UserRepository')),
+    __param(1, common_1.Inject('SequelizeInstance')),
+    __metadata("design:paramtypes", [Object, Object])
+], AuthService);
+exports.AuthService = AuthService;
+//# sourceMappingURL=auth.service.js.map

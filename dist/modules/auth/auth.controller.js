@@ -12,30 +12,30 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = void 0;
+exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-let UserService = class UserService {
-    constructor(userRepository, sequelizeInstance) {
-        this.userRepository = userRepository;
-        this.sequelizeInstance = sequelizeInstance;
+const user_service_1 = require("../users/user.service");
+const auth_service_1 = require("./auth.service");
+let AuthController = class AuthController {
+    constructor(authService, userService) {
+        this.authService = authService;
+        this.userService = userService;
     }
-    async create(user) {
-        return await this.userRepository.create(user);
-    }
-    async login(loginObject) {
-        const { name } = loginObject;
-        const user = await this.userRepository.findOne(name);
-        console.log(user);
-        if (!user)
-            console.log("success");
-        return user;
+    async index(body) {
+        this.userService.login(body);
     }
 };
-UserService = __decorate([
-    common_1.Injectable(),
-    __param(0, common_1.Inject("UserRepository")),
-    __param(1, common_1.Inject("SequelizeInstance")),
-    __metadata("design:paramtypes", [Object, Object])
-], UserService);
-exports.UserService = UserService;
-//# sourceMappingURL=user.service.js.map
+__decorate([
+    common_1.Post(),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "index", null);
+AuthController = __decorate([
+    common_1.Controller('auth'),
+    __metadata("design:paramtypes", [auth_service_1.AuthService,
+        user_service_1.UserService])
+], AuthController);
+exports.AuthController = AuthController;
+//# sourceMappingURL=auth.controller.js.map

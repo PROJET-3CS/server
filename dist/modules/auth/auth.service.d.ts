@@ -1,8 +1,7 @@
-import { User } from "./user.entity";
-export declare class UserService {
+import { User } from '../users/user.entity';
+export declare class AuthService {
     private readonly userRepository;
     private readonly sequelizeInstance;
     constructor(userRepository: typeof User, sequelizeInstance: any);
     create(user: any): Promise<User>;
-    login(loginObject: any): Promise<User>;
 }

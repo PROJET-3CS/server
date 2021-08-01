@@ -5,22 +5,16 @@ import { UserService } from "./user.service";
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @Get()
-  public async getusers(): Promise<any[]> {
-    return await this.usersService.get();
-  }
   @Post()
   public async create(@Body() body) {
     console.log(body);
 
-<<<<<<< HEAD
     await this.usersService.create(body);
   }
-=======
-    @Post()
-    public async signin(@Body() body, @Res() res) {
-          await this.usersService.create(body);
+  @Post()
+  public async signin(@Body() body, @Res() res) {
+    console.log(body);
 
-      }
->>>>>>> a525e3f83316f618a555ef77a3fb5b6da601db55
+    await this.usersService.create(body);
+  }
 }

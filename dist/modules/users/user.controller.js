@@ -19,20 +19,15 @@ let UserController = class UserController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    async getusers() {
-        return await this.usersService.get();
-    }
     async create(body) {
         console.log(body);
         await this.usersService.create(body);
     }
+    async signin(body, res) {
+        console.log(body);
+        await this.usersService.create(body);
+    }
 };
-__decorate([
-    common_1.Get(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getusers", null);
 __decorate([
     common_1.Post(),
     __param(0, common_1.Body()),
@@ -40,6 +35,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
+__decorate([
+    common_1.Post(),
+    __param(0, common_1.Body()),
+    __param(1, common_1.Res()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "signin", null);
 UserController = __decorate([
     common_1.Controller("users"),
     __metadata("design:paramtypes", [user_service_1.UserService])

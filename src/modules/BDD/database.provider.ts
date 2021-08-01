@@ -3,42 +3,39 @@ import { User } from "../users/user.entity";
 
 export const databaseProvider = {
   provide: "SequelizeInstance",
-  useFactory: () => {
+  useFactory: async () => {
     let config;
+    console.log(process.env);
 
     switch (process.env.NODE_ENV) {
       case "development":
-        // config = {
-        //   username: process.env.DB_USER,
-        //   password: process.env.DB_PASS,
-        //   database: process.env.DB_NAME,
-        //   host: process.env.DB_HOST,
-        //   port: Number(process.env.DB_PORT) || 5432,
-        //   dialect: "mysql",
-        //   logging: false,
-        //   force: true,
-        // };
-
         config = {
-          username: "root",
-          password: "root",
-          database: "ehealthDB",
-          host: "localhost",
-          port: 3036,
+          username: process.env.DB_USER,
+          // password: process.env.DB_PASS,
+          database: process.env.DB_NAME,
+          host: process.env.DB_HOST,
+          port: Number(process.env.DB_PORT),
           dialect: "mysql",
-          logging: false,
-          force: true,
+          // logging: false,
+          // force: true,
         };
+        break;
       default:
         config = config = {
-          username: "root",
-          password: "ouiouioui",
-          database: "testDB",
+          username: process.env.DB_USER,
+          password: process.env.DB_PASS,
+          database: process.env.DB_NAME,
+          host: process.env.DB_HOST,
+          port: Number(process.env.DB_PORT),
           dialect: "mysql",
+          // logging: false,
+          force: true,
         };
     }
+
     const sequelize = new Sequelize(config);
     sequelize.addModels([User]);
+    sequelize.sync({ force: true });
     return sequelize;
   },
 };
