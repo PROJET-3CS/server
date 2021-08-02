@@ -10,9 +10,14 @@ export class AuthController {
       private readonly userService: UserService
       ) {}
 
-    @Post()
-    public async index(@Body() body) {
-        this.userService.login(body)
+    @Post('login')
+    public async login(@Body() body) {
+       return this.authService.login(body)
+      }
 
+    @Post('signup')
+    public async signUp(@Body() body) {
+      return this.userService.create(body);
+        
       }
 }

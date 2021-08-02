@@ -21,17 +21,27 @@ let AuthController = class AuthController {
         this.authService = authService;
         this.userService = userService;
     }
-    async index(body) {
-        this.userService.login(body);
+    async login(body) {
+        return this.authService.login(body);
+    }
+    async signUp(body) {
+        return this.userService.create(body);
     }
 };
 __decorate([
-    common_1.Post(),
+    common_1.Post('login'),
     __param(0, common_1.Body()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], AuthController.prototype, "index", null);
+], AuthController.prototype, "login", null);
+__decorate([
+    common_1.Post('signup'),
+    __param(0, common_1.Body()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signUp", null);
 AuthController = __decorate([
     common_1.Controller('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,

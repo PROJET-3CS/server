@@ -3,5 +3,6 @@ export declare class AuthService {
     private readonly userRepository;
     private readonly sequelizeInstance;
     constructor(userRepository: typeof User, sequelizeInstance: any);
-    create(user: any): Promise<User>;
+    private _options;
+    login(loginObject: any): Promise<object>;
 }

@@ -4,5 +4,6 @@ export declare class AuthController {
     private readonly authService;
     private readonly userService;
     constructor(authService: AuthService, userService: UserService);
-    index(body: any): Promise<void>;
+    login(body: any): Promise<object>;
+    signUp(body: any): Promise<import("../users/user.entity").User>;
 }

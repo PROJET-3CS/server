@@ -1,9 +1,8 @@
 import { Inject, Injectable } from "@nestjs/common";
+import { Login } from "../auth/models/login.model";
 import { User } from "./user.entity";
 import * as nodemailer from "nodemailer";
 import { MailOptionsDto } from "./dto/mail-options.dto";
-import * as bcrypt from "bcryptjs";
-import { UpdateUserDto } from "./dto/requests.dto";
 
 @Injectable()
 export class UserService {
@@ -13,7 +12,9 @@ export class UserService {
   ) {}
 
   async create(user: any): Promise<User> {
-    return await this.userRepository.create(user);
+    var userWithoutPwd =  await this.userRepository.create(user);
+    userWithoutPwd.password = undefined;
+    return userWithoutPwd
   }
 
   async sendMail(mailOptions: MailOptionsDto) {
@@ -45,43 +46,11 @@ export class UserService {
     return user;
   }
 
-  async updatePassword(email, password) {
-    let user = await this.userRepository.findOne({ where: { email } });
-    let genSalt = await bcrypt.genSalt(10);
-    let hashedPassword = await bcrypt.hash(password, genSalt);
-    user.password = hashedPassword;
-    user.save();
-  }
-
-  public async updateAccount(userUpdate: UpdateUserDto) {
-    let { email } = userUpdate;
-
-    let user = await this.userRepository.findOne({
-      where: { email: "aymen.zitouni7@aiesec.net" },
-    });
-    user.update(userUpdate);
-    console.log(user);
-  }
-
   public async get(): Promise<User[]> {
     const users = await this.userRepository.findAll({
       attributes: ["name", "age"],
     });
 
     return users;
-  }
-
-  async login(loginObject: any): Promise<User> {
-    const { name } = loginObject;
-
-    const user = await this.userRepository.findOne(name);
-
-    console.log(user);
-
-    if (!user) console.log("success");
-
-    // }
-
-    return user;
   }
 }

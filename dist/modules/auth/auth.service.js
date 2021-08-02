@@ -14,13 +14,41 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
+const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
 let AuthService = class AuthService {
     constructor(userRepository, sequelizeInstance) {
         this.userRepository = userRepository;
         this.sequelizeInstance = sequelizeInstance;
+        this._options = {
+            algorithm: 'HS256',
+            expiresIn: '1 days',
+            jwtid: process.env.JWT_ID || ''
+        };
     }
-    async create(user) {
-        return await this.userRepository.create(user);
+    async login(loginObject) {
+        const { email, password } = loginObject;
+        const user = await this.userRepository.findOne({
+            where: {
+                [Op.and]: [
+                    { email: email },
+                    { password: password }
+                ]
+            }
+        });
+        if (!user) {
+            throw new common_1.UnauthorizedException();
+        }
+        else {
+            const payload = {
+                id: user.id,
+                email: user.email,
+                password: user.password
+            };
+            var token = jwt.sign(payload, 'JWT_KEY' || '', this._options);
+            user.password = undefined;
+            return { token, user };
+        }
     }
 };
 AuthService = __decorate([
