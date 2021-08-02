@@ -14,6 +14,8 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
+const nodemailer = require("nodemailer");
+const bcrypt = require("bcryptjs");
 let UserService = class UserService {
     constructor(userRepository, sequelizeInstance) {
         this.userRepository = userRepository;
@@ -21,6 +23,51 @@ let UserService = class UserService {
     }
     async create(user) {
         return await this.userRepository.create(user);
+    }
+    async sendMail(mailOptions) {
+        let transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+                user: process.env.MAIL_USER,
+                pass: process.env.MAIL_PASS,
+            },
+        });
+        await transporter.sendMail(mailOptions);
+    }
+    async findUserByEmail(email) {
+        return await this.userRepository.findOne({ where: { email } });
+    }
+    async confirmAccount(token) {
+        let user = await this.userRepository.findOne({
+            where: { token: token },
+        });
+        user.status = "actif";
+        user.token = "";
+        user.save();
+        delete user.password;
+        delete user.token;
+        return user;
+    }
+    async updatePassword(email, password) {
+        let user = await this.userRepository.findOne({ where: { email } });
+        let genSalt = await bcrypt.genSalt(10);
+        let hashedPassword = await bcrypt.hash(password, genSalt);
+        user.password = hashedPassword;
+        user.save();
+    }
+    async updateAccount(userUpdate) {
+        let { email } = userUpdate;
+        let user = await this.userRepository.findOne({
+            where: { email: "aymen.zitouni7@aiesec.net" },
+        });
+        user.update(userUpdate);
+        console.log(user);
+    }
+    async get() {
+        const users = await this.userRepository.findAll({
+            attributes: ["name", "age"],
+        });
+        return users;
     }
     async login(loginObject) {
         const { name } = loginObject;

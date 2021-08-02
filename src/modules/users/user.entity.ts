@@ -6,11 +6,7 @@ import {
   Unique,
   IsEmail,
 } from "sequelize-typescript";
-
-enum Gender {
-  female = "female",
-  male = "male",
-}
+import { Gender } from "../../shared/enums/gender.enum";
 
 @Table
 export class User extends Model {

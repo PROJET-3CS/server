@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const sequelize_typescript_1 = require("sequelize-typescript");
+const gender_enum_1 = require("../../shared/enums/gender.enum");
 let User = class User extends sequelize_typescript_1.Model {
 };
 __decorate([
@@ -25,11 +26,72 @@ __decorate([
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", String)
-], User.prototype, "name", void 0);
+], User.prototype, "firstname", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "lastname", void 0);
+__decorate([
+    sequelize_typescript_1.Unique,
+    sequelize_typescript_1.IsEmail,
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "email", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "password", void 0);
+__decorate([
+    sequelize_typescript_1.Column({ type: sequelize_typescript_1.DataType.ENUM(gender_enum_1.Gender.male, gender_enum_1.Gender.female) }),
+    __metadata("design:type", String)
+], User.prototype, "gender", void 0);
+__decorate([
+    sequelize_typescript_1.Column({ type: sequelize_typescript_1.DataType.DATE }),
+    __metadata("design:type", String)
+], User.prototype, "birdthDay", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "birthPlace", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "adress", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Number)
+], User.prototype, "phone", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", Boolean)
+], User.prototype, "avaialable", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "speciality", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "typePatient", void 0);
+__decorate([
+    sequelize_typescript_1.Column({
+        type: sequelize_typescript_1.DataType.ENUM("pending", "archived", "actif"),
+        defaultValue: "pending",
+    }),
+    __metadata("design:type", String)
+], User.prototype, "status", void 0);
+__decorate([
+    sequelize_typescript_1.Column({ type: sequelize_typescript_1.DataType.INTEGER }),
+    __metadata("design:type", Number)
+], User.prototype, "role", void 0);
 __decorate([
     sequelize_typescript_1.Column,
     __metadata("design:type", Number)
 ], User.prototype, "age", void 0);
+__decorate([
+    sequelize_typescript_1.Column,
+    __metadata("design:type", String)
+], User.prototype, "token", void 0);
 User = __decorate([
     sequelize_typescript_1.Table
 ], User);
