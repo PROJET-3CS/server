@@ -3,7 +3,6 @@ import { User } from "../users/user.entity";
 import * as dotenv from "dotenv";
 
 dotenv.config();
-
 export const databaseProvider = {
   provide: "SequelizeInstance",
   useFactory: async () => {
