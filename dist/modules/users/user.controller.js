@@ -19,7 +19,6 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const jwt = require("jsonwebtoken");
 const responses_dto_1 = require("./dto/responses.dto");
 const swagger_1 = require("@nestjs/swagger");
-const requests_dto_1 = require("./dto/requests.dto");
 let UserController = class UserController {
     constructor(usersService) {
         this.usersService = usersService;
@@ -50,15 +49,6 @@ let UserController = class UserController {
         this.usersService.confirmAccount(token);
         return "";
     }
-    async setPassword(body) {
-        let { email, password, passwordConfirmation } = body;
-        if (email && password === passwordConfirmation) {
-            this.usersService.updatePassword(email, password);
-        }
-    }
-    async updateAccount(user) {
-        this.usersService.updateAccount(user);
-    }
 };
 __decorate([
     common_1.Post(),
@@ -75,20 +65,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "confirmUser", null);
-__decorate([
-    common_1.Patch("/updatePassword"),
-    __param(0, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [requests_dto_1.UpdatePasswordDto]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "setPassword", null);
-__decorate([
-    common_1.Patch(),
-    __param(0, common_1.Body()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [requests_dto_1.UpdateUserDto]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "updateAccount", null);
 UserController = __decorate([
     common_1.Controller("users"),
     __metadata("design:paramtypes", [user_service_1.UserService])

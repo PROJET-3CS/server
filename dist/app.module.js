@@ -12,7 +12,13 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const user_module_1 = require("./modules/users/user.module");
 const auth_module_1 = require("./modules/auth/auth.module");
+const auth_middleware_1 = require("./utils/middleware/auth.middleware");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(auth_middleware_1.AuthMiddleware)
+            .forRoutes({ path: '*', method: common_1.RequestMethod.ALL });
+    }
 };
 AppModule = __decorate([
     common_1.Module({

@@ -1,5 +1,8 @@
 import { Sequelize } from "sequelize-typescript";
 import { User } from "../users/user.entity";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 export const databaseProvider = {
   provide: "SequelizeInstance",
@@ -10,13 +13,12 @@ export const databaseProvider = {
       case "development":
         config = {
           username: process.env.DB_USER,
-          // password: process.env.DB_PASS,
+          password: process.env.DB_PASS,
           database: process.env.DB_NAME,
           host: process.env.DB_HOST,
           port: Number(process.env.DB_PORT),
           dialect: "mysql",
-          // logging: false,
-          // force: true,
+          logging: false,
         };
         break;
       default:
@@ -24,17 +26,13 @@ export const databaseProvider = {
           username: process.env.DB_USER,
           password: process.env.DB_PASS,
           database: process.env.DB_NAME,
-          host: process.env.DB_HOST,
-          port: Number(process.env.DB_PORT),
           dialect: "mysql",
-          // logging: false,
-          force: true,
         };
+        break;
     }
 
     const sequelize = new Sequelize(config);
     sequelize.addModels([User]);
-    // sequelize.sync({ force: true });
     return sequelize;
   },
 };

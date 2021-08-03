@@ -15,14 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const nodemailer = require("nodemailer");
-const bcrypt = require("bcryptjs");
 let UserService = class UserService {
     constructor(userRepository, sequelizeInstance) {
         this.userRepository = userRepository;
         this.sequelizeInstance = sequelizeInstance;
     }
     async create(user) {
-        return await this.userRepository.create(user);
+        var userWithoutPwd = await this.userRepository.create(user);
+        userWithoutPwd.password = undefined;
+        return userWithoutPwd;
     }
     async sendMail(mailOptions) {
         let transporter = nodemailer.createTransport({
@@ -48,34 +49,11 @@ let UserService = class UserService {
         delete user.token;
         return user;
     }
-    async updatePassword(email, password) {
-        let user = await this.userRepository.findOne({ where: { email } });
-        let genSalt = await bcrypt.genSalt(10);
-        let hashedPassword = await bcrypt.hash(password, genSalt);
-        user.password = hashedPassword;
-        user.save();
-    }
-    async updateAccount(userUpdate) {
-        let { email } = userUpdate;
-        let user = await this.userRepository.findOne({
-            where: { email: "aymen.zitouni7@aiesec.net" },
-        });
-        user.update(userUpdate);
-        console.log(user);
-    }
     async get() {
         const users = await this.userRepository.findAll({
             attributes: ["name", "age"],
         });
         return users;
-    }
-    async login(loginObject) {
-        const { name } = loginObject;
-        const user = await this.userRepository.findOne(name);
-        console.log(user);
-        if (!user)
-            console.log("success");
-        return user;
     }
 };
 UserService = __decorate([

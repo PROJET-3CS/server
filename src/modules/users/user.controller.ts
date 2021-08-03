@@ -1,16 +1,14 @@
-import { Controller, Get, Post, Patch, Body, Param, Put } from "@nestjs/common";
+import { Controller, Get, Res, Body, Post, Param } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import * as jwt from "jsonwebtoken";
 import { CreateUserResponseDto } from "./dto/responses.dto";
 import { ApiOkResponse } from "@nestjs/swagger";
-import { UpdatePasswordDto, UpdateUserDto } from "./dto/requests.dto";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  // -------- Create new account & send the account confirmation token via mail --------
   @Post()
   @ApiOkResponse({ type: CreateUserResponseDto })
   public async signin(
@@ -48,23 +46,9 @@ export class UserController {
     return { status: "failed", message: "this email already exists" };
   }
 
-  // -------- Confirm created account via the token sent by mail  --------
   @Get("/confirm/:confirmationToken")
   public async confirmUser(@Param("confirmationToken") token): Promise<String> {
     this.usersService.confirmAccount(token);
     return "";
-  }
-
-  @Patch("/updatePassword")
-  public async setPassword(@Body() body: UpdatePasswordDto) {
-    let { email, password, passwordConfirmation } = body;
-    if (email && password === passwordConfirmation) {
-      this.usersService.updatePassword(email, password);
-    }
-  }
-
-  @Patch()
-  public async updateAccount(@Body() user: UpdateUserDto) {
-    this.usersService.updateAccount(user);
   }
 }
