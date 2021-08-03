@@ -20,7 +20,6 @@ export const databaseProvider = {
           dialect: "mysql",
           logging: false,
         };
-        break;
       default:
         config = config = {
           username: process.env.DB_USER,
