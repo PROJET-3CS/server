@@ -12,9 +12,9 @@ export class UserService {
   ) {}
 
   async create(user: any): Promise<User> {
-    var userWithoutPwd =  await this.userRepository.create(user);
+    var userWithoutPwd = await this.userRepository.create(user);
     userWithoutPwd.password = undefined;
-    return userWithoutPwd
+    return userWithoutPwd;
   }
 
   async sendMail(mailOptions: MailOptionsDto) {
@@ -33,6 +33,11 @@ export class UserService {
     return await this.userRepository.findOne({ where: { email } });
   }
 
+  async findUserById(id: number): Promise<User> {
+    let user = await this.userRepository.findByPk(id);
+    return user;
+  }
+
   async confirmAccount(token: string) {
     let user = await this.userRepository.findOne({
       where: { token: token },
@@ -46,9 +51,24 @@ export class UserService {
     return user;
   }
 
-  public async get(): Promise<User[]> {
-    const users = await this.userRepository.findAll({
-      attributes: ["name", "age"],
+  public async countUsers(): Promise<number> {
+    let count = await this.userRepository.count();
+    return count;
+  }
+
+  public async get(pageNumber: number) {
+    // let offset = 10 * pageNumber;
+
+    // let users = await this.userRepository.findAll({
+    //   offset: offset,
+    //   limit: 10,
+    // });
+
+    // return users;
+
+    let users = await this.userRepository.findAndCountAll({
+      limit: 3,
+      offset: pageNumber * 10,
     });
 
     return users;

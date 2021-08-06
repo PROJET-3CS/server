@@ -12,13 +12,13 @@ export const databaseProvider = {
       case "development":
         config = {
           username: process.env.DB_USER,
-          password: process.env.DB_PASS,
+          // password: process.env.DB_PASS,
           database: process.env.DB_NAME,
-          host: process.env.DB_HOST,
+          // host: process.env.DB_HOST,
           port: Number(process.env.DB_PORT),
           dialect: "mysql",
-          logging: false,
         };
+        break;
       default:
         config = config = {
           username: process.env.DB_USER,
