@@ -18,6 +18,9 @@ export class AuthController {
     @Post('signup')
     public async signUp(@Body() body) {
       return this.userService.create(body);
-        
+      }
+    @Post('verify_token')
+    public async verify_token(@Body() body) {
+      return this.authService.verify_token(body.token);
       }
 }

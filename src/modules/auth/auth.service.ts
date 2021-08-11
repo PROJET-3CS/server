@@ -2,6 +2,8 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from '../users/user.entity';
 import * as jwt from 'jsonwebtoken';
 const { Op } = require("sequelize");
+import * as dotenv from "dotenv";
+dotenv.config();
 
 @Injectable()
 export class AuthService  {
@@ -40,11 +42,22 @@ export class AuthService  {
             password: user.password
         };
 
-        var token = jwt.sign(payload, 'JWT_KEY' || '', this._options)
+        var token = jwt.sign(payload, process.env.JWT_KEY || 'JWT_KEY', this._options)
         
         user.password = undefined;
 
         return {token,user}
         }
+      }
+      public async verify_token(token: string): Promise<Boolean> {
+          try {
+            const isValid: Object = jwt.verify(token, process.env.JWT_KEY||'JWT_KEY');
+
+            return isValid ? true : false;
+              
+          } catch (error) {
+            return false
+          }
+         
       }
 }
