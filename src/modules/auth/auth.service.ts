@@ -20,6 +20,7 @@ export class AuthService  {
 
     public async login(loginObject: any): Promise<object> {
         const { email , password } = loginObject;
+        console.log(loginObject)
     
         const user = await this.userRepository.findOne({               
             where: {
