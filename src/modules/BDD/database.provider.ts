@@ -17,8 +17,8 @@ export const databaseProvider = {
           host: process.env.DB_HOST,
           port: Number(process.env.DB_PORT),
           dialect: "mysql",
-          logging: false,
         };
+        break;
       default:
         config = config = {
           username: process.env.DB_USER,
