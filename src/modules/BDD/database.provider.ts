@@ -31,7 +31,6 @@ export const databaseProvider = {
 
     const sequelize = new Sequelize(config);
     sequelize.addModels([User]);
-    sequelize.sync({force : true})
     return sequelize;
   },
 };
