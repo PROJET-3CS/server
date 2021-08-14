@@ -4,8 +4,6 @@ import { CreateUserDto } from "./dto/create-user.dto";
 import { CreateUserResponseDto } from "./dto/responses.dto";
 import { ApiBody, ApiOkResponse, ApiParam, ApiTags } from "@nestjs/swagger";
 import { UserDto } from "./dto/user.dto";
-import { User } from "./user.entity";
-import { last } from "rxjs";
 
 @ApiTags("users")
 @Controller("users")
@@ -22,7 +20,7 @@ export class UserController {
   //get users with paginations
   @Get("/get_users/:pageNumber")
   async getUsers(@Param("pageNumber") pageNumber: number) {
-    return this.usersService.getUsers(pageNumber);
+    return await this.usersService.getUsers(pageNumber);
   }
 
   // create new user
@@ -33,7 +31,7 @@ export class UserController {
     const newUser: CreateUserDto = { ...body };
     const { firstname, lastname, email, role } = newUser;
     if (firstname && lastname && email && role)
-      this.usersService.createUserWithConfirmationToken(newUser);
+      return await this.usersService.createUserWithConfirmationToken(newUser);
 
     return { status: "failed", body: "needed credentials" };
   }
@@ -41,6 +39,34 @@ export class UserController {
   // confirmation token route
   @Get("/confirm/:confirmationToken")
   public async confirmUser(@Param("confirmationToken") token) {
-    return this.usersService.confirmAccount(token);
+    return await this.usersService.confirmAccount(token);
   }
+
+  // // forgot password route to send password rest mail
+  // @Get("/:email")
+  // public async forgotPassword(@Param("email") email) {
+  //   if (email) return await this.usersService.forgotPasswort(email);
+  //   return { status: "failed", body: "email is empty" };
+  // }
+
+  // //  change password with token
+  // @Post("/forgot_password/:userId/:token")
+  // public async changePasswordAfterForgot(
+  //   @Param("userId") userId: number,
+  //   @Param("token") token: string,
+  //   @Body() body
+  // ) {
+  //   const { password, passwordConfirmation } = body;
+  //   if (password && passwordConfirmation)
+  //     return await this.usersService.updateForgottenPassword(
+  //       userId,
+  //       token,
+  //       password,
+  //       passwordConfirmation
+  //     );
+  //   return {
+  //     status: "failed",
+  //     body: "Password & Confirmation Password Required",
+  //   };
+  // }
 }

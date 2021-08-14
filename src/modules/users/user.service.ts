@@ -48,6 +48,33 @@ export class UserService {
     return users;
   }
 
+  public async updatePassword(
+    userId: number,
+    password: string,
+    passwordConfirmation: string
+  ) {
+    try {
+      if (password === passwordConfirmation) {
+        let user = await this.findUserById(userId);
+        if (user) {
+          user.token = "";
+          user.password = password;
+          user.save();
+          return { status: "success", body: "password updated successfully" };
+        }
+      }
+      return {
+        status: "failed",
+        body: "password doesn't match the confirmation password",
+      };
+    } catch (error) {
+      return {
+        status: "failed",
+        body: "an error occured , please try again later",
+      };
+    }
+  }
+
   // @ROUTE Confirm account with token
   async confirmAccount(token: string) {
     try {
@@ -80,7 +107,7 @@ export class UserService {
       }
       return { status: "failed", body: "user doesn't exists" };
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       return { status: "failed", body: "An error occured , try later" };
     }
   }
@@ -142,5 +169,61 @@ export class UserService {
         body: "an error occured , please try again later",
       };
     }
+  }
+
+  // @ROUTE forgot password
+  public async forgotPasswort(email: string) {
+    try {
+      let user = await this.findUserByEmail(email);
+
+      // if user not fount
+      if (!user) {
+        return {
+          status: "failed",
+          body: "account doesn't exist",
+        };
+      }
+
+      const token = jwt.sign({ userId: user.id }, "secret");
+      user.token = token;
+      user.save();
+      let mailOptions = {
+        from: "no-reply@gmail.com",
+        to: email,
+        subject: "reset password",
+        text: "reset passwordt",
+        html: `<h1>Reset Password</h1>
+            <h2>Hello ${user.firstname} ${user.lastname}</h2>
+            <p> Please reset your password by clicking on the following link</p>
+            <a href=http://${process.env.BASE_URL}/users/reset_password/${user.id}/${token}> Click here</a>
+            `,
+      };
+
+      this.sendMail(mailOptions);
+      return {
+        status: "success",
+        body: "please check your mail",
+      };
+    } catch (error) {
+      return {
+        status: "failed",
+        body: "an error occured , please try again later",
+      };
+    }
+  }
+
+  // @ROUTE update password with token
+  public async updateForgottenPassword(
+    userId: number,
+    token: string,
+    password: string,
+    passwordConfirmation: string
+  ) {
+    try {
+      let decodedToken = jwt.verify(token, "secret");
+      if (Number(decodedToken) === userId)
+        this.updatePassword(userId, password, passwordConfirmation);
+      return { status: "failed", body: "invalid link" };
+    } catch (error) {}
   }
 }
