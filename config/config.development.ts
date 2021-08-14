@@ -1,9 +1,10 @@
 import { Dialect } from "sequelize/types";
+import * as dotenv from "dotenv";
+dotenv.config();
 
 const config = {
   database: {
     username: process.env.DB_USER,
-    // password: process.env.DB_PASS,
     password: process.env.DB_PASS,
     host: process.env.DB_HOST,
     port: Number(process.env.DB_PORT),

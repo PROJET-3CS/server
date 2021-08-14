@@ -220,10 +220,17 @@ export class UserService {
     passwordConfirmation: string
   ) {
     try {
+      let user = await this.findUserById(userId);
       let decodedToken = jwt.verify(token, "secret");
-      if (Number(decodedToken) === userId)
-        this.updatePassword(userId, password, passwordConfirmation);
-      return { status: "failed", body: "invalid link" };
+
+      if (
+        !(
+          user.token === token && Object(decodedToken).userId === Number(userId)
+        )
+      )
+        return { status: "failed", body: "invalid link" };
+
+      return await this.updatePassword(userId, password, passwordConfirmation);
     } catch (error) {}
   }
 }
