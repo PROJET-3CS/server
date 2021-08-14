@@ -107,7 +107,7 @@ export class UserService {
       }
       return { status: "failed", body: "user doesn't exists" };
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       return { status: "failed", body: "An error occured , try later" };
     }
   }
@@ -195,7 +195,7 @@ export class UserService {
         html: `<h1>Reset Password</h1>
             <h2>Hello ${user.firstname} ${user.lastname}</h2>
             <p> Please reset your password by clicking on the following link</p>
-            <a href=http://${process.env.BASE_URL}/users/reset_password/${user.id}/${token}> Click here</a>
+            <a href=http://${process.env.BASE_URL}/users/forgot_password/${user.id}/${token}> Click here</a>
             `,
       };
 

@@ -42,31 +42,31 @@ export class UserController {
     return await this.usersService.confirmAccount(token);
   }
 
-  // // forgot password route to send password rest mail
-  // @Get("/:email")
-  // public async forgotPassword(@Param("email") email) {
-  //   if (email) return await this.usersService.forgotPasswort(email);
-  //   return { status: "failed", body: "email is empty" };
-  // }
+  // forgot password route to send password rest mail
+  @Get("/forgot_password/:email")
+  public async forgotPassword(@Param("email") email) {
+    if (email) return await this.usersService.forgotPasswort(email);
+    return { status: "failed", body: "email is empty" };
+  }
 
-  // //  change password with token
-  // @Post("/forgot_password/:userId/:token")
-  // public async changePasswordAfterForgot(
-  //   @Param("userId") userId: number,
-  //   @Param("token") token: string,
-  //   @Body() body
-  // ) {
-  //   const { password, passwordConfirmation } = body;
-  //   if (password && passwordConfirmation)
-  //     return await this.usersService.updateForgottenPassword(
-  //       userId,
-  //       token,
-  //       password,
-  //       passwordConfirmation
-  //     );
-  //   return {
-  //     status: "failed",
-  //     body: "Password & Confirmation Password Required",
-  //   };
-  // }
+  //  change password with token
+  @Post("/forgot_password/:userId/:token")
+  public async changePasswordAfterForgot(
+    @Param("userId") userId: number,
+    @Param("token") token: string,
+    @Body() body
+  ) {
+    const { password, passwordConfirmation } = body;
+    if (password && passwordConfirmation)
+      return await this.usersService.updateForgottenPassword(
+        userId,
+        token,
+        password,
+        passwordConfirmation
+      );
+    return {
+      status: "failed",
+      body: "Password & Confirmation Password Required",
+    };
+  }
 }
