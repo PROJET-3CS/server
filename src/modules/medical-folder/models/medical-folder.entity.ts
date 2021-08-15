@@ -6,8 +6,8 @@ import {
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
-import { User } from "./user.entity";
-import { Blood } from "./../../../shared/enums/blood.enum";
+import { User } from "../../users/models/user.entity";
+import { Blood } from "../../../shared/enums/blood.enum";
 
 @Table
 export class MedicalFolder extends Model {
@@ -92,7 +92,9 @@ export class MedicalFolder extends Model {
   })
   surgicalInterventions: string;
 
-  @Column
+  @Column({
+    field: "allergic_reactions",
+  })
   allergicReactions: string;
 
   //Association with user table __ OneToOne Relation __

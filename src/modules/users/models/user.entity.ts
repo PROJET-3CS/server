@@ -8,7 +8,7 @@ import {
   HasOne,
 } from "sequelize-typescript";
 import { Gender } from "../../../shared/enums/gender.enum";
-import { MedicalFolder } from "./medical-folder.entity";
+import { MedicalFolder } from "../../medical-folder/models/medical-folder.entity";
 
 @Table
 export class User extends Model {
@@ -73,7 +73,7 @@ export class User extends Model {
   @Column
   token: String;
 
-  //Association with medical folder table __ OneToOne Relation __
-  // @HasOne(() => MedicalFolder)
-  // medicalFolder: MedicalFolder;
+  // Association with medical folder table __ OneToOne Relation __
+  @HasOne(() => MedicalFolder)
+  medicalFolder: MedicalFolder;
 }
