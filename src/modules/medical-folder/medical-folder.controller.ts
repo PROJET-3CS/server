@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Controller, Get, Param, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { MedicalFolderService } from "./medical-folder.service";
 
@@ -8,12 +8,14 @@ export class MedicalFolderController {
   constructor(private readonly medicalFolderService: MedicalFolderService) {}
 
   @Post("/:id")
-  editMedicalFolder() {
-    return this.medicalFolderService.updateMedicalFolder();
+  editMedicalFolder(@Param("id") id: number) {
+    return this.medicalFolderService.updateMedicalFolder(id);
   }
 
   @Get("/:id")
-  getMedicalFolder() {
+  getMedicalFolder(@Param("id") id: number) {
+    return this.medicalFolderService.updateMedicalFolder(id);
+
     // return this.medicalFolderService.getMedicalFolder();
   }
 

@@ -8,7 +8,8 @@ import {
   HasOne,
 } from "sequelize-typescript";
 import { Gender } from "../../../shared/enums/gender.enum";
-import { MedicalFolder } from "../../medical-folder/models/medical-folder.entity";
+
+import { MedicalFolder } from "../../medical-folder/medical-folder.entity";
 
 @Table
 export class User extends Model {
