@@ -1,5 +1,5 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
-import { User } from "../users/user.entity";
+import { User } from "../users/models/user.entity";
 import * as jwt from "jsonwebtoken";
 const { Op } = require("sequelize");
 import * as dotenv from "dotenv";
@@ -67,7 +67,7 @@ export class AuthService {
         });
       }
 
-      return { user, isValid: isValid && user? true : false };
+      return { user, isValid: isValid && user ? true : false };
     } catch (error) {
       return { user: "", isValid: false };
     }

@@ -1,8 +1,22 @@
-import { Controller, Get, Res, Body, Post, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  Res,
+  Body,
+  Post,
+  Param,
+  Delete,
+} from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { CreateUserResponseDto } from "./dto/responses.dto";
-import { ApiBody, ApiOkResponse, ApiParam, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiParam,
+  ApiTags,
+} from "@nestjs/swagger";
 import { UserDto } from "./dto/user.dto";
 
 @ApiTags("users")
@@ -11,7 +25,8 @@ export class UserController {
   constructor(private readonly usersService: UserService) {}
 
   //get user by id
-  @ApiOkResponse({ type: UserDto })
+  @ApiCreatedResponse({ type: UserDto })
+  @ApiParam({ name: "id", required: true })
   @Get(":id")
   async getUser(@Param("id") id: number) {
     return this.usersService.getUser(id);
@@ -25,7 +40,7 @@ export class UserController {
 
   // create new user
   @Post()
-  @ApiOkResponse({ type: CreateUserResponseDto })
+  @ApiBody({ isArray: true })
   @ApiBody({ type: CreateUserDto })
   public async signin(@Body() body: CreateUserDto) {
     const newUser: CreateUserDto = { ...body };
@@ -44,7 +59,7 @@ export class UserController {
 
   // forgot password route to send password rest mail
   @Get("/forgot_password/:email")
-  public async forgotPassword(@Param("email") email) {
+  public async forgotPassword(@Param("email") email: string) {
     if (email) return await this.usersService.forgotPasswort(email);
     return { status: "failed", body: "email is empty" };
   }
@@ -68,5 +83,29 @@ export class UserController {
       status: "failed",
       body: "Password & Confirmation Password Required",
     };
+  }
+
+  // request registration by patient
+  @Post("request")
+  async requestRegistration(@Body() body) {
+    return this.usersService.requestRegistration(body);
+  }
+
+  // Accept request registration by patient
+  @Get("/request/:id")
+  async acceptRegistrationRequest(@Param("id") id: number) {
+    return this.usersService.acceptRegistrationRequest(id);
+  }
+
+  // Decline request registration by patient
+  @Delete("/request/:id")
+  async declineRegistrationRequest(@Param("id") id: number) {
+    return this.usersService.declineRegistrationRequest(id);
+  }
+
+  //get requests with pagination
+  @Get("/requests/:pageNumber")
+  async getRequests(@Param("pageNumber") pageNumber: number) {
+    return await this.usersService.getRequests(pageNumber);
   }
 }

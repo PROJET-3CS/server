@@ -1,6 +1,7 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Login } from "../auth/models/login.model";
-import { User } from "./user.entity";
+import { User } from "./models/user.entity";
+import { UserRequests } from "./models/userRequests.entity";
 import * as nodemailer from "nodemailer";
 import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
@@ -9,6 +10,8 @@ import { MailOptionsDto } from "./dto/mail-options.dto";
 export class UserService {
   constructor(
     @Inject("UserRepository") private readonly userRepository: typeof User,
+    @Inject("UserRequestsRepository")
+    private readonly userRequestsRepository: typeof UserRequests,
     @Inject("SequelizeInstance") private readonly sequelizeInstance
   ) {}
 
@@ -41,7 +44,7 @@ export class UserService {
 
   public async get(pageNumber: number) {
     let users = await this.userRepository.findAndCountAll({
-      limit: 3,
+      limit: 10,
       offset: pageNumber * 10,
     });
 
@@ -232,5 +235,115 @@ export class UserService {
 
       return await this.updatePassword(userId, password, passwordConfirmation);
     } catch (error) {}
+  }
+
+  public async requestRegistration(regisrationRequest) {
+    try {
+      const { firstname, lastname, email } = regisrationRequest;
+
+      let user = await this.findUserByEmail(email);
+      if (user)
+        return {
+          status: "failed",
+          body: "this email is already used by another user",
+        };
+
+      let request = await this.userRequestsRepository.findOne({
+        where: { email: email },
+      });
+
+      if (!request) {
+        await this.userRequestsRepository.create({
+          firstname,
+          lastname,
+          email,
+        });
+        return {
+          status: "success",
+          body: "registration request sent successfuly",
+        };
+      }
+      return {
+        status: "failed",
+        body: "registration request for this user already exist",
+      };
+    } catch (error) {
+      return {
+        status: "failed",
+        body: "an error occured, please try agian later",
+      };
+    }
+  }
+
+  public async acceptRegistrationRequest(id: number) {
+    try {
+      let request = await this.userRequestsRepository.findByPk(id);
+      if (!request)
+        return {
+          success: "failed",
+          body: "this registration request doesn't exist",
+        };
+      const newUser = {
+        firstname: request.firstname,
+        lastname: request.lastname,
+        email: request.email,
+        role: 3,
+      };
+      this.createUserWithConfirmationToken(newUser);
+      this.userRequestsRepository.destroy({ where: { id: id } });
+
+      return {
+        success: "success",
+        body: "registration request accepted successfuly",
+      };
+    } catch (error) {
+      return {
+        status: "failed",
+        body: "an error occured, please try agian later",
+      };
+    }
+  }
+
+  public async declineRegistrationRequest(id: number) {
+    try {
+      let request = await this.userRequestsRepository.findByPk(id);
+      if (!request)
+        return {
+          success: "failed",
+          body: "this registration request doesn't exist",
+        };
+      await this.userRequestsRepository.destroy({ where: { id: id } });
+      return {
+        success: "success",
+        body: "registration request declined successfuly",
+      };
+    } catch (error) {
+      return {
+        status: "failed",
+        body: "an error occured, please try agian later",
+      };
+    }
+  }
+
+  public async getRequests(pageNumber: number) {
+    try {
+      let requests = await this.userRequestsRepository.findAndCountAll({
+        limit: 10,
+        offset: pageNumber * 10,
+      });
+      const count = await this.userRequestsRepository.count();
+      return {
+        status: "success",
+        body: {
+          count,
+          requests,
+          currentPage: pageNumber,
+          totalPages: Math.ceil(count / 10),
+        },
+      };
+    } catch (error) {
+      console.log(error);
+      return { status: "failed", body: "An error occured , try later" };
+    }
   }
 }

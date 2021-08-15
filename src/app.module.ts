@@ -7,8 +7,6 @@ import { AuthMiddleware } from "./utils/middleware/auth.middleware";
 
 @Module({
   imports: [UserModule, AuthModule],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
