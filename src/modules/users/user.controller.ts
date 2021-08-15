@@ -19,7 +19,7 @@ import {
 } from "@nestjs/swagger";
 import { UserDto } from "./dto/user.dto";
 
-@ApiTags("users")
+@ApiTags("Users & Accounts management")
 @Controller("users")
 export class UserController {
   constructor(private readonly usersService: UserService) {}
