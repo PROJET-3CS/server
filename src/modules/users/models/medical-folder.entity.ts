@@ -3,9 +3,8 @@ import {
   Column,
   Model,
   DataType,
-  Unique,
-  IsEmail,
   ForeignKey,
+  BelongsTo,
 } from "sequelize-typescript";
 import { User } from "./user.entity";
 import { Blood } from "./../../../shared/enums/blood.enum";
@@ -22,16 +21,19 @@ export class MedicalFolder extends Model {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.UUID,
+    type: DataType.INTEGER,
     field: "user_id",
   })
-  userId: string;
+  userId: number;
 
   //Personal infos
-  @Column
+  @Column({ type: DataType.INTEGER })
   tall: number;
 
-  @Column
+  @Column({ type: DataType.INTEGER })
+  sjsj: number;
+
+  @Column({ type: DataType.INTEGER })
   weight: number;
 
   @Column({
@@ -67,8 +69,8 @@ export class MedicalFolder extends Model {
   @Column({ field: "ex_smoker" })
   exSmoker: boolean;
 
-  @Column({ type: DataType.ARRAY(DataType.STRING) })
-  medicaments: string[];
+  @Column
+  medicaments: string;
 
   @Column
   other: string;
@@ -76,22 +78,24 @@ export class MedicalFolder extends Model {
   //Surgical Medicinal History
   @Column({
     field: "congenital_infections",
-    type: DataType.ARRAY(DataType.STRING),
+    // type: DataType.ARRAY(DataType.STRING),
   })
-  congenitalInfections: string[];
+  congenitalInfections: string;
 
-  @Column({ field: "general_illnesses", type: DataType.ARRAY(DataType.STRING) })
-  generalIllnesses: string[];
+  @Column({
+    field: "general_illnesses",
+  })
+  generalIllnesses: string;
 
   @Column({
     field: "surgical_interventions",
-    type: DataType.ARRAY(DataType.STRING),
   })
-  surgicalInterventions: string[];
+  surgicalInterventions: string;
 
-  @Column({
-    field: "allergic_reactions",
-    type: DataType.ARRAY(DataType.STRING),
-  })
-  allergicReactions: string[];
+  @Column
+  allergicReactions: string;
+
+  //Association with user table __ OneToOne Relation __
+  @BelongsTo(() => User)
+  user: User;
 }
