@@ -29,6 +29,12 @@ export class MedicalFolderService {
   public async getMedicalFolderByUserId(userId: number) {
     return await this.medicalFolderRepository.findOne({
       where: { userId: userId },
+      include: [
+        GeneralIllness,
+        SurgicalIntervention,
+        Medicament,
+        AllergicReaction,
+      ],
     });
   }
 

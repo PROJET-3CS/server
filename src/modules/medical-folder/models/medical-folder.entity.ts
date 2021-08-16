@@ -7,11 +7,15 @@ import {
   BelongsTo,
   AfterCreate,
   HasOne,
+  HasMany,
 } from "sequelize-typescript";
 import { User } from "../../users/models/user.entity";
 import { Blood } from "src/shared/enums/blood.enum";
 import { MedicalFolderStatus } from "src/shared/medical-folder-status.enum";
 import { Medicament } from "./medicament.entity";
+import { GeneralIllness } from "./general-illness.entity";
+import { SurgicalIntervention } from "./surgical-intervention.entity";
+import { AllergicReaction } from "./allergic-reaction.entity";
 
 @Table
 export class MedicalFolder extends Model {
@@ -108,8 +112,17 @@ export class MedicalFolder extends Model {
   // })
   // allergicReactions: string;
 
-  @HasOne(() => Medicament)
-  medicament: Medicament;
+  @HasMany(() => Medicament)
+  medicaments: Medicament;
+
+  @HasMany(() => GeneralIllness)
+  generalIllnesses: GeneralIllness;
+
+  @HasMany(() => SurgicalIntervention)
+  surgicalInterventions: SurgicalIntervention;
+
+  @HasMany(() => AllergicReaction)
+  allergicReactions: AllergicReaction;
 
   //Association with user table __ OneToOne Relation __
   @BelongsTo(() => User)

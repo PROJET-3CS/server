@@ -7,6 +7,8 @@ import { MailOptionsDto } from "./dto/mail-options.dto";
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { MedicalFolder } from "../medical-folder/models/medical-folder.entity";
 import { Medicament } from "../medical-folder/models/medicament.entity";
+import { GeneralIllness } from "../medical-folder/models/general-illness.entity";
+import { SurgicalIntervention } from "../medical-folder/models/surgical-intervention.entity";
 
 @Injectable()
 export class UserService {
@@ -50,7 +52,6 @@ export class UserService {
     let users = await this.userRepository.findAndCountAll({
       limit: 10,
       offset: pageNumber * 10,
-      include: { model: MedicalFolder },
     });
 
     console.log(Promise.resolve(users.rows));
@@ -107,12 +108,16 @@ export class UserService {
   public async getUser(id: number) {
     try {
       let user = await this.findUserById(id);
+
+      let medicalFolder =
+        await this.medicalFolderService.getMedicalFolderByUserId(id);
+
       if (user) {
         user.password = undefined;
         user.token = undefined;
         return {
           status: "success",
-          body: user,
+          body: { user, medicalFolder },
         };
       }
       return { status: "failed", body: "user doesn't exists" };
