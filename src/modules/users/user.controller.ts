@@ -6,6 +6,7 @@ import {
   Post,
   Param,
   Delete,
+  Query,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -18,6 +19,7 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 import { UserDto } from "./dto/user.dto";
+import { Gender } from "src/shared/enums/gender.enum";
 
 @ApiTags("Users & Accounts management")
 @Controller("users")
@@ -36,14 +38,6 @@ export class UserController {
   @Get("/get_users/:pageNumber")
   async getUsers(@Param("pageNumber") pageNumber: number) {
     return await this.usersService.getUsers(pageNumber);
-  }
-
-
-  @Get('/filter/*')
-  async filterMeth(@Param() params: number) {
-    const fir = params[0].split("&");
-        
-    return await this.usersService.filterMeth(fir);
   }
 
   // create new user
@@ -115,5 +109,43 @@ export class UserController {
   @Get("/requests/:pageNumber")
   async getRequests(@Param("pageNumber") pageNumber: number) {
     return await this.usersService.getRequests(pageNumber);
+  }
+
+
+  //filter Users
+  @Get('/filter/params?')
+
+  //get query params
+  async filterMeth(
+    @Query('firstname')firstname: string,
+    @Query('lastname') lastname: string,
+    @Query('email') email: string,
+    @Query('gender') gender: Gender,
+    @Query('birthPlace') birthPlace: string,
+    @Query('adress') adress: string,
+    @Query('age') age: Number,
+    @Query('speciality') speciality: string,
+    @Query('phone') phone: number,
+    @Query('avaialable') avaialable: number,
+    @Query('typePatient') typePatient: string,
+    @Query('status') status: string,
+  ) 
+  {         
+         return await this.usersService.filterMeth(
+           {
+            firstname,
+            lastname,
+            email,
+            gender,
+            birthPlace,
+            adress,
+            age,
+            speciality,
+            avaialable,
+            phone,
+            typePatient,
+            status
+           }
+         );
   }
 }

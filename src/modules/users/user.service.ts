@@ -7,6 +7,7 @@ import { MailOptionsDto } from "./dto/mail-options.dto";
 const { Op } = require("sequelize");
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { MedicalFolder } from "../medical-folder/medical-folder.entity";
+import { map } from "rxjs";
 
 @Injectable()
 export class UserService {
@@ -357,47 +358,34 @@ export class UserService {
   public async filterMeth(userParams: any) {
 
     try {
-       // userParams include Url params after split(&) ===== [firstname=XXXX,lastname=XXXX]
 
-       var att_value = {};
+      //check if there is minimum one parametre
+      const isEmpty = Object.values(userParams).every(attribute => (attribute === null || attribute === '' ||attribute=== undefined));      
 
-       //forEach loop to fill splited userParams in att_value object ['firstname':XXXX,'lastname':XXXX]
-       userParams.forEach((element,i) => 
-         {
-           const key = userParams[i].split('=')[0] 
-           const value = userParams[i].split('=')[1];
-           att_value[key] = value;            
-         }
-         );
-       //if there is no attrbute matched to route init firstname with $ to make sure get a void return
-       var missingAtt = 0
-       const atts = ['firstname','lastname','email','gender','birthPlace','adress','age','speciality']
 
-       //count nbr of missing attrbutes if all are missing init firstname with $
-       atts.forEach(attr => {
-         const link = userParams.toString()
-         const bool = link.search(attr)
-
-         //increment every missing of  
-         if(bool<0) missingAtt++;          
-       });
-
-       if (missingAtt==8) {
-         att_value['firstname']="$"   
-       }     
-       
-       //if  att value is undifined assign % like option
+      //if qeuery it empty init firstname with dollar to make sure users=[]
+      if (isEmpty) {
+        userParams.firstname = '$'
+      }
+      
+      //searching with params if null use % to give all values
        const users = await this.userRepository.findAll({
           where: {
             [Op.and]:{
-              firstname: { [Op.like]: att_value[atts[0]]   || '%'},
-              lastname:  { [Op.like]: att_value[atts[1]]   || '%'},
-              email:     { [Op.like]: att_value[atts[2]]   || '%'},
-              gender:    { [Op.like]: att_value[atts[3]]   || '%'},
-              birthPlace:{ [Op.like]: att_value[atts[4]]   || '%'},
-              adress:    { [Op.like]: att_value[atts[5]]   || '%'},
-              age:       { [Op.like]: att_value[atts[6]]   || '%'},
-              speciality:{ [Op.like]: att_value[atts[7]]   || '%'},
+              firstname:   { [Op.like]: userParams.firstname   || '%'},
+              lastname:    { [Op.like]: userParams.lastname    || '%'},
+              email:       { [Op.like]: userParams.email       || '%'},
+              gender:      { [Op.like]: userParams.gender      || '%'},
+              birthPlace:  { [Op.like]: userParams.birthPlace  || '%'},
+              adress:      { [Op.like]: userParams.adress      || '%'},
+              age:         { [Op.like]: userParams.age         || '%'},
+              speciality:  { [Op.like]: userParams.speciality  || '%'},
+              avaialable:  { [Op.like]: userParams.avaialable  || '%'},
+              phone:       { [Op.like]: userParams.phone       || '%'},
+              typePatient: { [Op.like]: userParams.typePatient || '%'},
+              status:      { [Op.like]: userParams.status      || '%'},
+
+
             }
           }
         });
