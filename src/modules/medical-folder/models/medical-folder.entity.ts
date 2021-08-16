@@ -6,10 +6,12 @@ import {
   ForeignKey,
   BelongsTo,
   AfterCreate,
+  HasOne,
 } from "sequelize-typescript";
 import { User } from "../../users/models/user.entity";
 import { Blood } from "src/shared/enums/blood.enum";
 import { MedicalFolderStatus } from "src/shared/medical-folder-status.enum";
+import { Medicament } from "./medicament.entity";
 
 @Table
 export class MedicalFolder extends Model {
@@ -105,6 +107,9 @@ export class MedicalFolder extends Model {
   //   field: "allergic_reactions",
   // })
   // allergicReactions: string;
+
+  @HasOne(() => Medicament)
+  medicament: Medicament;
 
   //Association with user table __ OneToOne Relation __
   @BelongsTo(() => User)

@@ -6,6 +6,7 @@ import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { MedicalFolder } from "../medical-folder/models/medical-folder.entity";
+import { Medicament } from "../medical-folder/models/medicament.entity";
 
 @Injectable()
 export class UserService {
@@ -49,8 +50,10 @@ export class UserService {
     let users = await this.userRepository.findAndCountAll({
       limit: 10,
       offset: pageNumber * 10,
-      include: [{ model: MedicalFolder }],
+      include: { model: MedicalFolder },
     });
+
+    console.log(Promise.resolve(users.rows));
 
     return users;
   }

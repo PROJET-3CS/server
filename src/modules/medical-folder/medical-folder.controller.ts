@@ -28,18 +28,26 @@ export class MedicalFolderController {
     return this.medicalFolderService.archive(id);
   }
 
-  @Post("/add_medicament")
-  addMedicament() {}
+  @Post("/add_medicament/:userId")
+  addMedicament(@Param("userId") userId: number, @Body() body) {
+    return this.medicalFolderService.addMedicament(userId, body);
+  }
 
   @Post("/add_congenital_infections")
   addCongenitalInfections() {}
 
-  @Post("/add_general_illnesses")
-  addGeneralIllnesses() {}
+  @Post("/add_general_illness/:userId")
+  addGeneralIllnesses(@Param("userId") userId: number, @Body() body) {
+    return this.medicalFolderService.addGeneralIllness(userId, body);
+  }
 
-  @Post("/add_surgical_interventions")
-  addSurgicalInterventions() {}
+  @Post("/add_surgical_intervention/:userId")
+  addSurgicalInterventions(@Param("userId") userId: number, @Body() body) {
+    return this.medicalFolderService.addSurgicalIntervention(userId, body);
+  }
 
-  @Post("/add_allergic_reactions")
-  addAllergicReactions() {}
+  @Post("/add_allergic_reaction/:userId")
+  addAllergicReactions(@Param("userId") userId: number, @Body() body) {
+    return this.medicalFolderService.addAllergicReaction(userId, body);
+  }
 }
