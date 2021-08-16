@@ -1,15 +1,18 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Login } from "../auth/models/login.model";
 import { User } from "./models/user.entity";
 import { UserRequests } from "./models/userRequests.entity";
 import * as nodemailer from "nodemailer";
 import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
 const { Op } = require("sequelize");
+import { MedicalFolderService } from "../medical-folder/medical-folder.service";
+import { MedicalFolder } from "../medical-folder/medical-folder.entity";
 
 @Injectable()
 export class UserService {
   constructor(
+    private readonly medicalFolderService: MedicalFolderService,
+
     @Inject("UserRepository") private readonly userRepository: typeof User,
     @Inject("UserRequestsRepository")
     private readonly userRequestsRepository: typeof UserRequests,
@@ -48,6 +51,7 @@ export class UserService {
     let users = await this.userRepository.findAndCountAll({
       limit: 10,
       offset: pageNumber * 10,
+      include: [{ model: MedicalFolder }],
     });
 
     return users;
@@ -91,7 +95,7 @@ export class UserService {
       user.save();
       delete user.password;
       delete user.token;
-
+      this.medicalFolderService.create(user.id);
       return { status: "sucess", body: user };
     } catch (error) {
       return { status: "failed", body: "an error occured" };
@@ -397,7 +401,7 @@ export class UserService {
             }
           }
         });
-        
+
         if(users.length==0){
           
          return { status: "failed", body: "user not found" };

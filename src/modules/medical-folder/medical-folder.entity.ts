@@ -5,9 +5,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  AfterCreate,
 } from "sequelize-typescript";
-import { User } from "../../users/models/user.entity";
-import { Blood } from "../../../shared/enums/blood.enum";
+import { User } from "../users/models/user.entity";
+import { Blood } from "src/shared/enums/blood.enum";
+import { MedicalFolderStatus } from "src/shared/medical-folder-status.enum";
 
 @Table
 export class MedicalFolder extends Model {
@@ -25,6 +27,16 @@ export class MedicalFolder extends Model {
     field: "user_id",
   })
   userId: number;
+
+  @Column({
+    type: DataType.ENUM(
+      MedicalFolderStatus.enabled,
+      MedicalFolderStatus.disabled,
+      MedicalFolderStatus.archived
+    ),
+    defaultValue: MedicalFolderStatus.disabled,
+  })
+  status: MedicalFolderStatus;
 
   //Personal infos
   @Column({ type: DataType.INTEGER })
@@ -101,3 +113,5 @@ export class MedicalFolder extends Model {
   @BelongsTo(() => User)
   user: User;
 }
+
+AfterCreate;

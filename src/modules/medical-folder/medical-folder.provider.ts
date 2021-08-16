@@ -1,6 +1,6 @@
-import { MedicalFolder } from "./models/medical-folder.entity";
+import { MedicalFolder } from "./medical-folder.entity";
 
 export const medicalFolderProvider = {
-  provide: "MedicalFolderProvider",
+  provide: "MedicalFolderRepository",
   useValue: MedicalFolder,
 };
