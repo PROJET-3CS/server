@@ -3,7 +3,7 @@ import { User } from "../users/models/user.entity";
 import * as dotenv from "dotenv";
 import config from "../../../config/config.development";
 import { UserRequests } from "../users/models/userRequests.entity";
-import { MedicalFolder } from "../medical-folder/medical-folder.entity";
+import { MedicalFolder } from "../medical-folder/models/medical-folder.entity";
 
 export const databaseProvider = {
   provide: "SequelizeInstance",

@@ -5,7 +5,7 @@ import * as nodemailer from "nodemailer";
 import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
-import { MedicalFolder } from "../medical-folder/medical-folder.entity";
+import { MedicalFolder } from "../medical-folder/models/medical-folder.entity";
 
 @Injectable()
 export class UserService {

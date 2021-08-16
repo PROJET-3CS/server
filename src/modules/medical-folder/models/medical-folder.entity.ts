@@ -7,7 +7,7 @@ import {
   BelongsTo,
   AfterCreate,
 } from "sequelize-typescript";
-import { User } from "../users/models/user.entity";
+import { User } from "../../users/models/user.entity";
 import { Blood } from "src/shared/enums/blood.enum";
 import { MedicalFolderStatus } from "src/shared/medical-folder-status.enum";
 
@@ -82,32 +82,29 @@ export class MedicalFolder extends Model {
   exSmoker: boolean;
 
   @Column
-  medicaments: string;
-
-  @Column
   other: string;
 
   //Surgical Medicinal History
-  @Column({
-    field: "congenital_infections",
-    // type: DataType.ARRAY(DataType.STRING),
-  })
-  congenitalInfections: string;
+  // @Column({
+  //   field: "congenital_infections",
+  //   // type: DataType.ARRAY(DataType.STRING),
+  // })
+  // congenitalInfections: string;
 
-  @Column({
-    field: "general_illnesses",
-  })
-  generalIllnesses: string;
+  // @Column({
+  //   field: "general_illnesses",
+  // })
+  // generalIllnesses: string;
 
-  @Column({
-    field: "surgical_interventions",
-  })
-  surgicalInterventions: string;
+  // @Column({
+  //   field: "surgical_interventions",
+  // })
+  // surgicalInterventions: string;
 
-  @Column({
-    field: "allergic_reactions",
-  })
-  allergicReactions: string;
+  // @Column({
+  //   field: "allergic_reactions",
+  // })
+  // allergicReactions: string;
 
   //Association with user table __ OneToOne Relation __
   @BelongsTo(() => User)
