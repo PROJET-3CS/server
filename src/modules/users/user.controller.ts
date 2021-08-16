@@ -38,6 +38,14 @@ export class UserController {
     return await this.usersService.getUsers(pageNumber);
   }
 
+
+  @Get('/filter/*')
+  async filterMeth(@Param() params: number) {
+    const fir = params[0].split("&");
+        
+    return await this.usersService.filterMeth(fir);
+  }
+
   // create new user
   @Post()
   @ApiBody({ isArray: true })

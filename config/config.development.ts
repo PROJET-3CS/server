@@ -11,7 +11,7 @@ const config = {
     database: process.env.DB_NAME,
     dialect: "mysql" as Dialect,
   },
-  jwtPrivateKey: "JWT_KEY",
+  jwtPrivateKey:process.env.JWT_PRIVATE_KEY || "JWT_KEY",
 };
 
 export default config;

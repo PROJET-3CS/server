@@ -5,6 +5,7 @@ import { UserRequests } from "./models/userRequests.entity";
 import * as nodemailer from "nodemailer";
 import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
+const { Op } = require("sequelize");
 
 @Injectable()
 export class UserService {
@@ -20,6 +21,7 @@ export class UserService {
     userWithoutPwd.password = undefined;
     return userWithoutPwd;
   }
+
 
   async sendMail(mailOptions: MailOptionsDto) {
     let transporter = nodemailer.createTransport({
@@ -346,4 +348,75 @@ export class UserService {
       return { status: "failed", body: "An error occured , try later" };
     }
   }
+
+  //filtre Users
+  public async filterMeth(userParams: any) {
+
+    try {
+       // userParams include Url params after split(&) ===== [firstname=XXXX,lastname=XXXX]
+
+       var att_value = {};
+
+       //forEach loop to fill splited userParams in att_value object ['firstname':XXXX,'lastname':XXXX]
+       userParams.forEach((element,i) => 
+         {
+           const key = userParams[i].split('=')[0] 
+           const value = userParams[i].split('=')[1];
+           att_value[key] = value;            
+         }
+         );
+       //if there is no attrbute matched to route init firstname with $ to make sure get a void return
+       var missingAtt = 0
+       const atts = ['firstname','lastname','email','gender','birthPlace','adress','age','speciality']
+
+       //count nbr of missing attrbutes if all are missing init firstname with $
+       atts.forEach(attr => {
+         const link = userParams.toString()
+         const bool = link.search(attr)
+
+         //increment every missing of  
+         if(bool<0) missingAtt++;          
+       });
+
+       if (missingAtt==8) {
+         att_value['firstname']="$"   
+       }     
+       
+       //if  att value is undifined assign % like option
+       const users = await this.userRepository.findAll({
+          where: {
+            [Op.and]:{
+              firstname: { [Op.like]: att_value[atts[0]]   || '%'},
+              lastname:  { [Op.like]: att_value[atts[1]]   || '%'},
+              email:     { [Op.like]: att_value[atts[2]]   || '%'},
+              gender:    { [Op.like]: att_value[atts[3]]   || '%'},
+              birthPlace:{ [Op.like]: att_value[atts[4]]   || '%'},
+              adress:    { [Op.like]: att_value[atts[5]]   || '%'},
+              age:       { [Op.like]: att_value[atts[6]]   || '%'},
+              speciality:{ [Op.like]: att_value[atts[7]]   || '%'},
+            }
+          }
+        });
+        
+        if(users.length==0){
+          
+         return { status: "failed", body: "user not found" };
+
+        }else{
+         
+         //hiding user passwords
+         users.forEach(user => {
+           user.password = undefined;
+         });
+
+         return users;
+       }
+          
+    } catch (error) {
+     return { status: "failed", body: "bad params" };
+    }}
+     
+    
+
+
 }

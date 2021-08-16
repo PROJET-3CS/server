@@ -38,7 +38,7 @@ export class User extends Model {
   gender: Gender;
 
   @Column({ type: DataType.DATE })
-  birdthDay: String;
+  birthDay: String;
 
   @Column
   birthPlace: String;
