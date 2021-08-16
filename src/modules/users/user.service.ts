@@ -4,11 +4,10 @@ import { UserRequests } from "./models/userRequests.entity";
 import * as nodemailer from "nodemailer";
 import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
+const { Op } = require("sequelize");
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
-import { MedicalFolder } from "../medical-folder/models/medical-folder.entity";
-import { Medicament } from "../medical-folder/models/medicament.entity";
-import { GeneralIllness } from "../medical-folder/models/general-illness.entity";
-import { SurgicalIntervention } from "../medical-folder/models/surgical-intervention.entity";
+
+import { map } from "rxjs";
 
 @Injectable()
 export class UserService {
@@ -356,6 +355,55 @@ export class UserService {
     } catch (error) {
       console.log(error);
       return { status: "failed", body: "An error occured , try later" };
+    }
+  }
+
+  //filtre Users
+  public async filterMeth(userParams: any) {
+    try {
+      //check if there is minimum one parametre
+      const isEmpty = Object.values(userParams).every(
+        (attribute) =>
+          attribute === null || attribute === "" || attribute === undefined
+      );
+
+      //if qeuery it empty init firstname with dollar to make sure users=[]
+      if (isEmpty) {
+        userParams.firstname = "$";
+      }
+
+      //searching with params if null use % to give all values
+      const users = await this.userRepository.findAll({
+        where: {
+          [Op.and]: {
+            firstname: { [Op.like]: userParams.firstname || "%" },
+            lastname: { [Op.like]: userParams.lastname || "%" },
+            email: { [Op.like]: userParams.email || "%" },
+            gender: { [Op.like]: userParams.gender || "%" },
+            birthPlace: { [Op.like]: userParams.birthPlace || "%" },
+            adress: { [Op.like]: userParams.adress || "%" },
+            age: { [Op.like]: userParams.age || "%" },
+            speciality: { [Op.like]: userParams.speciality || "%" },
+            avaialable: { [Op.like]: userParams.avaialable || "%" },
+            phone: { [Op.like]: userParams.phone || "%" },
+            typePatient: { [Op.like]: userParams.typePatient || "%" },
+            status: { [Op.like]: userParams.status || "%" },
+          },
+        },
+      });
+
+      if (users.length == 0) {
+        return { status: "failed", body: "user not found" };
+      } else {
+        //hiding user passwords
+        users.forEach((user) => {
+          user.password = undefined;
+        });
+
+        return users;
+      }
+    } catch (error) {
+      return { status: "failed", body: "bad params" };
     }
   }
 }

@@ -3,12 +3,12 @@ import { Dialect } from 'sequelize/types';
 
 export const config = {
     database: {
-        dialect: 'postgres' as Dialect,
-        host: process.env.DATABASE_HOST,
-        port: +process.env.DATABASE_PORT,
-        username: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_DATABASE,
+        username: process.env.PROD_DB_USER,
+        password: process.env.PROD_DB_PASS,
+        host: process.env.PROD_DB_HOST,
+        port: Number(process.env.PROD_DB_PORT),
+        database: process.env.PROD_DB_NAME,
+        dialect: "mysql" as Dialect,
         logging: false,
     },
     jwtPrivateKey: process.env.JWT_PRIVATE_KEY,

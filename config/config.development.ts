@@ -10,8 +10,9 @@ const config = {
     port: Number(process.env.DB_PORT),
     database: process.env.DB_NAME,
     dialect: "mysql" as Dialect,
+    logging: false
   },
-  jwtPrivateKey: "JWT_KEY",
+  jwtPrivateKey:process.env.JWT_PRIVATE_KEY || "JWT_KEY",
 };
 
 export default config;
