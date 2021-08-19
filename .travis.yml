@@ -31,7 +31,7 @@ install:
 before_script:
   # Start server and client for tests
   - echo -e "DB_HOST=127.0.0.1\DB_PORT=3306\DB_NAME=clinity\DB_USER=root\DB_PASS=password\PORT=5000" > .env
-  - npm run build
+  - npm run build &
 
 script:
   # Run unit, component, and e2e tests
