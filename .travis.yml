@@ -31,7 +31,7 @@ install:
   - npm ci
   
 env:
-  - DOCKER_COMPOSE_VERSION=2
+  - DOCKER_COMPOSE_VERSION=2.1.0
 
 before_script:
   # Start server and client for tests
