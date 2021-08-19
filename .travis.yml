@@ -34,7 +34,6 @@ before_script:
 
 script:
   - npm run build
-  - npm run start
 
 deploy:
   # Build Docker container and push to Docker Hub
