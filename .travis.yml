@@ -29,10 +29,18 @@ install:
   - echo "MTY1LjIyNy42MC4zMyBlY2RzYS1zaGEyLW5pc3RwMjU2IEFBQUFFMlZqWkhOaExYTm9ZVEl0Ym1semRIQXlOVFlBQUFBSWJtbHpkSEF5TlRZQUFBQkJCTVVPRlVVT3BxSzNmWkMzUUxJNmsrL2Vlc1l5YVVaNGZXbkRUaWNia1pjMmJIR1ltMG4wVk9RaW5mK0NYY2xhWmZTaVBNQ0xZakJUUzkrUWxWSFpPZ009" | base64 -d >> $HOME/.ssh/known_hosts
   # - sudo snap install doctl
   - npm ci
+  
+env:
+  - DOCKER_COMPOSE_VERSION=1.4.2
 
 before_script:
   # Start server and client for tests
   - echo -e "DB_HOST=127.0.0.1\DB_PORT=3306\DB_NAME=clinity\DB_USER=root\DB_PASS=password\PORT=5000" > .env
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose --version
 
 script:
   - npm run build
