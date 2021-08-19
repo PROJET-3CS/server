@@ -21,6 +21,8 @@ cache:
 services:
   # Use Docker command line
   - docker
+  # Use MySQL command line
+  - mysql
 
 install:
   # Install dependencies for tests
