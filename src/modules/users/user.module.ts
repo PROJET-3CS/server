@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../database/database.module";
 import { UserController } from "./user.controller";
 import { UserService } from "./user.service";
-import { usersProvider, usersRequestsProvider } from "./user.provider";
+import { MedecinProvider, PatientProvider, usersProvider, usersRequestsProvider } from "./user.provider";
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import {
   medicalFolderProvider,
@@ -25,6 +25,8 @@ import {
     generalIllnessProvider,
     allergicReactionProvider,
     surgicalInterventionProvider,
+    MedecinProvider,
+    PatientProvider
   ],
   exports: [UserModule],
 })

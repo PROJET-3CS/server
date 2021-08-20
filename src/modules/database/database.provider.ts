@@ -8,6 +8,9 @@ import { Medicament } from "../medical-folder/models/medicament.entity";
 import { AllergicReaction } from "../medical-folder/models/allergic-reaction.entity";
 import { GeneralIllness } from "../medical-folder/models/general-illness.entity";
 import { SurgicalIntervention } from "../medical-folder/models/surgical-intervention.entity";
+import { Doctor } from "../users/models/doctor.entity";
+import { Appointment } from "src/modules/appointment/models/appointment.entity";
+import { Patient } from "../users/models/patient.entity";
 
 export const databaseProvider = {
   provide: "SequelizeInstance",
@@ -21,6 +24,9 @@ export const databaseProvider = {
       AllergicReaction,
       GeneralIllness,
       SurgicalIntervention,
+      Doctor,
+      Appointment,
+      Patient
     ]);
     // await sequelize.sync({ force: true });
     return sequelize;
