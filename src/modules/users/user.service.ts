@@ -36,6 +36,12 @@ export class UserService {
     return doctor;
     
   }
+  
+  async createPatient(body:string){
+    var patient = await this.PatientRepository.create(body);
+    return patient;
+  }
+
   async sendMail(mailOptions: MailOptionsDto) {
     let transporter = nodemailer.createTransport({
       service: "Gmail",

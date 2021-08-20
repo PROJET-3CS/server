@@ -4,7 +4,6 @@ import {
     Model,
     DataType,
     ForeignKey,
-    HasOne,
     BelongsTo,
   } from "sequelize-typescript";
 import { Doctor } from "src/modules/users/models/doctor.entity";
@@ -20,12 +19,7 @@ import { Patient } from "src/modules/users/models/patient.entity";
     })
     public id: number;
 
-    @ForeignKey(() => Patient)
-    @Column({
-      type: DataType.INTEGER,
-      field: "patientId",
-    })
-    patientId: number;
+
 
     @ForeignKey(() => Doctor)
     @Column({
@@ -34,18 +28,31 @@ import { Patient } from "src/modules/users/models/patient.entity";
     })
     doctorId: number;
 
+
+    @ForeignKey(() => Patient)
+    @Column({
+      type: DataType.INTEGER,
+      field: "patientId",
+    })
+    patientId: number;
+    
+
     @Column
     description: String;
 
     @Column
     date: Date;
 
+  
+    @Column({
+      defaultValue:false
+    })
+    isAccepted: boolean;
 
+    
     @BelongsTo(() => Doctor)
-    doctor: Doctor;
-    
-    
+    doctor: Doctor;  
+
     @BelongsTo(() => Patient)
     patient: Patient;
   }
-  
