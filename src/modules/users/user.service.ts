@@ -7,7 +7,9 @@ import { MailOptionsDto } from "./dto/mail-options.dto";
 const { Op } = require("sequelize");
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 
-import { map } from "rxjs";
+import { CreateUserDto } from "./dto/create-user.dto";
+import { Doctor } from "./models/doctor.entity";
+import { Patient } from "./models/patient.entity";
 
 @Injectable()
 export class UserService {
@@ -17,13 +19,27 @@ export class UserService {
     @Inject("UserRepository") private readonly userRepository: typeof User,
     @Inject("UserRequestsRepository")
     private readonly userRequestsRepository: typeof UserRequests,
-    @Inject("SequelizeInstance") private readonly sequelizeInstance
+    @Inject("MedecinRepository")
+    private readonly MedecinRepository: typeof Doctor,
+    @Inject("PatientRepository")
+    private readonly PatientRepository: typeof Patient,
   ) {}
 
   async create(user: any): Promise<User> {
     var userWithoutPwd = await this.userRepository.create(user);
     userWithoutPwd.password = undefined;
     return userWithoutPwd;
+  }
+
+  async createMedcin(body:string){
+    var doctor = await this.MedecinRepository.create(body);
+    return doctor;
+    
+  }
+  
+  async createPatient(body:string){
+    var patient = await this.PatientRepository.create(body);
+    return patient;
   }
 
   async sendMail(mailOptions: MailOptionsDto) {

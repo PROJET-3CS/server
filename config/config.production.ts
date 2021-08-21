@@ -9,7 +9,7 @@ export const config = {
         port: Number(process.env.PROD_DB_PORT),
         database: process.env.PROD_DB_NAME,
         dialect: "mysql" as Dialect,
-        logging: false,
+        logging: true,
     },
     jwtPrivateKey: process.env.JWT_PRIVATE_KEY,
 };
