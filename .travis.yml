@@ -38,10 +38,10 @@ script:
   - npm run build
   - bash deploy.sh
 
-deploy:
-  # Build Docker container and push to Docker Hub
-  # Pull into DigitalOcean container and start
-  provider: script
-  script: bash deploy.sh
-  on:
-    branch: master
+# deploy:
+#   # Build Docker container and push to Docker Hub
+#   # Pull into Heroku container and start
+#   provider: script
+#   script: bash deploy.sh
+#   on:
+#     branch: master
