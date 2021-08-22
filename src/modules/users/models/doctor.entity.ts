@@ -17,7 +17,4 @@ export class Doctor extends User {
   })
   public id: number;
 
-
-  @HasMany(() => Appointment)
-  appointment: Appointment[]
 }

@@ -34,18 +34,6 @@ export class UserController {
     return this.usersService.getUser(id);
   }
 
-
-  @Post('/createMed')
-  async createMedcin(@Body() medecin:string){
-      return this.usersService.createMedcin(medecin)
-  }
-  
-
-  @Post('/createPatient')
-  async createPatient(@Body() patient:string){
-      return this.usersService.createPatient(patient)
-  }
-
   //get users with paginations
   @Get("/get_users/:pageNumber")
   async getUsers(@Param("pageNumber") pageNumber: number) {

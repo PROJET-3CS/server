@@ -6,7 +6,9 @@ import {
   Unique,
   IsEmail,
   HasOne,
+  HasMany,
 } from "sequelize-typescript";
+import { Appointment } from "src/modules/appointment/models/appointment.entity";
 import { Gender } from "../../../shared/enums/gender.enum";
 
 import { MedicalFolder } from "../../medical-folder/models/medical-folder.entity";
@@ -72,9 +74,19 @@ export class User extends Model {
   age: Number;
 
   @Column
+  promo: Number;
+
+  @Column
+  groupe: Number;
+
+  @Column
   token: String;
+
 
   // Association with medical folder table __ OneToOne Relation __
   @HasOne(() => MedicalFolder)
   medicalFolder: MedicalFolder;
+
+  @HasMany(() => Appointment)
+  appointment: Appointment[]
 }

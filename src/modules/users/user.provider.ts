@@ -1,5 +1,3 @@
-import { Doctor } from "./models/doctor.entity";
-import { Patient } from "./models/patient.entity";
 import { User } from "./models/user.entity";
 import { UserRequests } from "./models/userRequests.entity";
 
@@ -13,13 +11,4 @@ export const usersRequestsProvider = {
   useValue: UserRequests,
 };
 
-export const MedecinProvider = {
-  provide: "MedecinRepository",
-  useValue: Doctor,
-};
-
-export const PatientProvider = {
-  provide: "PatientRepository",
-  useValue: Patient,
-};
 

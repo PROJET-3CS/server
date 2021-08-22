@@ -19,6 +19,4 @@ export class Patient extends User {
   })
   public id: number;
 
-  @HasOne(() => Appointment)
-  appointment: Appointment;
 }
