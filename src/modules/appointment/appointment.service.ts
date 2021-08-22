@@ -33,7 +33,7 @@ export class AppointmentService {
       });
       return rdv;
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   }
 
@@ -49,7 +49,7 @@ export class AppointmentService {
       return appointment;
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -79,7 +79,7 @@ export class AppointmentService {
       return Appointment;
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -147,7 +147,7 @@ export class AppointmentService {
 
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -163,7 +163,7 @@ export class AppointmentService {
       return appointments;
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -225,7 +225,7 @@ export class AppointmentService {
       }
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -305,7 +305,7 @@ export class AppointmentService {
       }
 
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -359,7 +359,7 @@ export class AppointmentService {
       };
       this.sendMail(rdvChanges);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -375,7 +375,7 @@ export class AppointmentService {
       );
       appointment.destroy();
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -393,7 +393,7 @@ export class AppointmentService {
       appointment.status = AppoinStatus.Archived;
       appointment.save();
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
