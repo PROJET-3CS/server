@@ -5,9 +5,11 @@ import {
   Get,
   Param,
   Post,
-  Query,
 } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import {
+  ApiCreatedResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { AppointmentService } from "./appointment.service";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 
@@ -27,18 +29,23 @@ export class appointmentController {
   }
 
   //get my appoitnment
-  @Get("my_appointment/:id")
+  @Get("/:id")
+  @ApiCreatedResponse({
+    description:
+      "pass UserId as params to get all his appointments (both Patient & doctor)",
+  })
   async my_appointment(@Param("id") id: number) {
     return this.appointmentService.my_appointment(id);
   }
 
-  @Get("ask_for_appointment?")
+  @Post("ask_for_appointment")
+  @ApiCreatedResponse({ description: "ask for appointment as Patient" })
   async AppointmentRequest(
-    @Query("patientId") patientId: number,
-    @Query("description") description: string,
-    @Query("date") date: Date,
-    @Query("start_time") start_time: Date,
-    @Query("end_time") end_time: Date
+    @Body("patientId") patientId: number,
+    @Body("description") description: string,
+    @Body("date") date: Date,
+    @Body("start_time") start_time: Date,
+    @Body("end_time") end_time: Date
   ) {
     return this.appointmentService.AppointmentRequest({
       patientId,
@@ -49,14 +56,18 @@ export class appointmentController {
     });
   }
 
-  @Get("accept_appointment")
+  @Post("accept_appointment/:appointmentId")
+  @ApiCreatedResponse({
+    description:
+      "accept appointment, required :appointmentId, doctorId, date, start_time, end_time",
+  })
   async AcceptAppointmentRequest(
-    @Query("doctorId") doctorId: number,
-    @Query("description") description: string,
-    @Query("date") date: Date,
-    @Query("appointmentId") appointmentId: number,
-    @Query("start_time") start_time: Date,
-    @Query("end_time") end_time: Date
+    @Param("appointmentId") appointmentId: number,
+    @Body("doctorId") doctorId: number,
+    @Body("description") description: string,
+    @Body("date") date: Date,
+    @Body("start_time") start_time: Date,
+    @Body("end_time") end_time: Date
   ) {
     return this.appointmentService.AcceptAppointmentRequest({
       appointmentId,
@@ -68,15 +79,19 @@ export class appointmentController {
     });
   }
 
-  @Get("demand_appointment")
+  @Post("demand_appointment")
+  @ApiCreatedResponse({
+    description:
+      "demand Appointment to a one patient with his email or his Id (not both)",
+  })
   async demandAppointment(
-    @Query("doctorId") doctorId: number,
-    @Query("patientId") patientId: number,
-    @Query("TargetEmail") TargetEmail: string,
-    @Query("description") description: string,
-    @Query("date") date: Date,
-    @Query("start_time") start_time: Date,
-    @Query("end_time") end_time: Date
+    @Body("doctorId") doctorId: number,
+    @Body("patientId") patientId: number,
+    @Body("targetEmail") TargetEmail: string,
+    @Body("description") description: string,
+    @Body("date") date: Date,
+    @Body("start_time") start_time: Date,
+    @Body("end_time") end_time: Date
   ) {
     return this.appointmentService.demandAppointment({
       doctorId,
@@ -89,7 +104,11 @@ export class appointmentController {
     });
   }
 
-  @Post("demand_Appointment_collectif")
+  @Post("demand_appointment_collectif")
+  @ApiCreatedResponse({
+    description:
+      "demand Appointment collectif with emailList[] or (Promo & groupe) not both",
+  })
   async demandAppointmentCollectif(
     @Body("emailList") emailList: [string],
     @Body("promo") promo: number,
@@ -106,11 +125,12 @@ export class appointmentController {
       start_time,
       end_time,
       description,
-      date
+      date,
     });
   }
 
   @Post("edit_appointment/:AppointmentId")
+  @ApiCreatedResponse({ description: "Edit Appointment" })
   async EditAppointment(
     @Param("AppointmentId") AppointmentId: number,
     @Body("status") status: AppoinStatus,
@@ -130,11 +150,15 @@ export class appointmentController {
   }
 
   @Delete("cancel_appointment/:AppointmentId")
+  @ApiCreatedResponse({ description: "Cancel or Delete an Appointment" })
   async CancelAppointment(@Param("AppointmentId") AppointmentId: number) {
     return this.appointmentService.CancelAppointment(AppointmentId);
   }
 
   @Post("archive_appointment/:AppointmentId")
+  @ApiCreatedResponse({
+    description: "Archive Appointment after patient pass it",
+  })
   async ArchiveAppointment(@Param("AppointmentId") AppointmentId: number) {
     return this.appointmentService.ArchiveAppointment(AppointmentId);
   }
