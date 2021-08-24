@@ -6,7 +6,6 @@ import { Appointment } from "./models/appointment.entity";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 import { User } from "../users/models/user.entity";
 const { Op } = require("sequelize");
-const moment = require("moment");
 dotenv.config();
 
 @Injectable()
@@ -18,36 +17,68 @@ export class AppointmentService {
     private readonly userRepository: typeof User
   ) {}
 
+
+  private async doctorAvailability(start_time,end_time): Promise<boolean> {
+    var startTime = "'"+start_time+"'"
+    var endTime = "'"+end_time+"'"
+    var Appointment = await this.AppointmentRepository.sequelize.query(
+      `SELECT * FROM Appointments WHERE (start_time <= ${startTime} AND end_time >${startTime}) OR (start_time <= ${endTime} AND end_time >= ${endTime})`,
+      )
+      if (Appointment[0].length==0) {        
+        return true
+      }
+      else return false 
+       
+  }
+
   public async createAppointment(appointment) {
     try {
       var { doctorId, patientId, description, date, start_time, end_time } =
         appointment;
+      //check Doctor Availability
+      const isAvailable = await this.doctorAvailability(start_time, end_time);
 
-      var rdv = await this.AppointmentRepository.create({
-        doctorId,
-        patientId,
-        description,
-        date,
-        start_time,
-        end_time,
-      });
-      return rdv;
+      if (isAvailable) {
+        var rdv = await this.AppointmentRepository.create({
+          doctorId,
+          patientId,
+          description,
+          date,
+          start_time,
+          end_time,
+        });
+        return {
+          success: "success",
+          body: rdv,
+        };
+      }
+      else{
+        return {
+          success: "failed",
+          body: "Doctor not available ,he has another appointment at this time",
+        };
+      }
     } catch (error) {
       console.log(error.message);
     }
   }
 
   //view my appointment as patient
-  public async my_appointment(patientId) {
+  public async my_appointment(id) {
     try {
       var appointment = await this.AppointmentRepository.findAll({
         where: {
-          patientId: patientId,
+          [Op.or]: {
+            patientId: id,
+            doctorId: id,
+          },
         },
       });
 
-      return appointment;
-
+      return {
+        success: "success",
+        response: appointment,
+      };
     } catch (error) {
       console.log(error.message);
       return {
@@ -59,33 +90,47 @@ export class AppointmentService {
 
   //patient appointment request
   public async AppointmentRequest(appointmentRequest) {
-    try {
+    try {            
       var { patientId, description, date, start_time, end_time } =
         appointmentRequest;
 
-      //creation Appointment
-      var Appointment = await this.AppointmentRepository.create({
-        patientId,
-        description,
-        date,
-        start_time,
-        end_time,
-      });
 
-      //change Status (accepted, refused, archived, SentByPatient,SentByDoctor)
-      Appointment.status = AppoinStatus.SentByPatient;
-      Appointment.save();
+        //check Doctor Availability
+        const isAvailable = await this.doctorAvailability(start_time,end_time)
 
-      return Appointment;
+        if (!isAvailable) {
+          
+          return {
+            success: "failed",
+            response: "Doctor not available ,he has another appointment at this time",
+          };
+        }
+        else{
+          //creation Appointment
+          var appointment = await this.AppointmentRepository.create({
+            patientId,
+            description,
+            date,
+            start_time,
+            end_time,
+          });
+
+          //change Status (accepted, refused, archived, SentByPatient,SentByDoctor) 
+          appointment.status = AppoinStatus.SentByPatient;
+          appointment.save();
+
+          return {
+            success: "success",
+            response: appointment,
+          };
+        }
 
     } catch (error) {
       console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
-
       };
-
     }
   }
 
@@ -137,30 +182,37 @@ export class AppointmentService {
         appointment.end_time = end_time;
         appointment.save();
 
-        return appointment;
-
+        return {
+          success: "success",
+          response: appointment,
+        };
       }
       return {
         status: "failed",
         body: "params should contain appointmentId, doctorId, date, start_time, end_time",
       };
 
-
     } catch (error) {
+
       console.log(error.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
       };
+      
     }
   }
-  
+
   //get ALL appointments
   public async getAll_Appointment() {
     try {
+
       const appointments = await this.AppointmentRepository.findAll();
 
-      return appointments;
+      return {
+        success: "success",
+        response: appointments,
+      };
 
     } catch (error) {
       console.log(error.message);
@@ -170,11 +222,11 @@ export class AppointmentService {
       };
     }
   }
-
 
   //doctor or Admin demand Appointment for Patient with Id or Email
   public async demandAppointment(demandToPAtient) {
     try {
+
       const {
         patientId,
         TargetEmail,
@@ -185,43 +237,59 @@ export class AppointmentService {
         end_time,
       } = demandToPAtient;
 
+      const isAvailable = await this.doctorAvailability(start_time,end_time)
+
+
       const patient = await this.userRepository.findByPk(patientId);
       const patientMail = patient.email;
 
-      //check if email is exist in patient Table
+      //check if TargetEmail is match patient email
       if ((TargetEmail && !patientMail) || (!TargetEmail && patientMail)) {
-        var Appointment = await this.AppointmentRepository.create({
-          doctorId,
-          patientId,
-          description,
-          date,
-          start_time,
-          end_time,
-        });
 
-        //send mail
-        let mailOptions = {
-          from: process.env.MAIL_USER,
-          to: patient.email,
-          subject: "Appointment",
-          text: " Appointment request",
-          html: `
-                  <center><h2>Hello ${patient.firstname} ${patient.lastname}</h2>
-                  <h1 style='color:green'>You Are invited to an Appointment</h1>
-                  <h2 style='color:red'>Time : ${date} from ${start_time} to ${end_time} Please respect that time </h2>
-                  <h3 style='color:blue'>${description} </h3>
-                  </center>
-                  `,
-        };
-        this.sendMail(mailOptions);
+        if (isAvailable) {
+          var Appointment = await this.AppointmentRepository.create({
+            doctorId,
+            patientId,
+            description,
+            date,
+            start_time,
+            end_time,
+          });
+  
+          //send mail
+          let mailOptions = {
+            from: process.env.MAIL_USER,
+            to: patient.email,
+            subject: "Appointment",
+            text: " Appointment request",
+            html: `
+                    <center><h2>Hello ${patient.firstname} ${patient.lastname}</h2>
+                    <h1 style='color:green'>You Are invited to an Appointment</h1>
+                    <h2 style='color:red'>Time : ${date} from ${start_time} to ${end_time} Please respect that time </h2>
+                    <h3 style='color:blue'>${description} </h3>
+                    </center>
+                    `,
+          };
+  
+          this.sendMail(mailOptions);
+  
+          return {
+            success: "success",
+            response: "email sent successfully",
+          };
+        }else{
+          return {
+            status: "failed",
+            body: "Doctor not available ,he has another appointment at this time",
+          };
+        }
+
 
       } else {
-
         return {
           status: "failed",
           body: "Choose one option with patientId or TargetEmail not both ",
         };
-
       }
 
     } catch (error) {
@@ -229,7 +297,6 @@ export class AppointmentService {
       return {
         status: "failed",
         body: "an error occured , please try again later",
-
       };
     }
   }
@@ -254,7 +321,6 @@ export class AppointmentService {
           body: "Choose one option with emailtList or Promo & Groupe not both",
         };
       } else {
-
         //if option is promo&&group
         if (promo && groupe) {
           const patients = await this.userRepository.findAll({
@@ -281,9 +347,14 @@ export class AppointmentService {
                       `,
             };
             this.sendMail(promoGrpMails);
+
+            return {
+              success: "success",
+              response: "email sent successfully",
+            };
           });
 
-        //if option is EmailList (EmailList type table)
+          //if option is EmailList (EmailList type table)
         } else if (emailList) {
           emailList.forEach((email) => {
             let collectifMail = {
@@ -300,6 +371,10 @@ export class AppointmentService {
                       `,
             };
             this.sendMail(collectifMail);
+            return {
+              success: "success",
+              response: "email sent successfully",
+            };
           });
         }
       }
@@ -310,14 +385,12 @@ export class AppointmentService {
         status: "failed",
         body: "an error occured , please try again later",
       };
-
     }
   }
 
   //edit Appointment
   public async EditAppointment(EditInfo) {
     try {
-
       const appointment = await this.AppointmentRepository.findByPk(
         EditInfo.AppointmentId
       );
@@ -328,7 +401,7 @@ export class AppointmentService {
         },
       });
 
-      //update changes 
+      //update changes
       const {
         status = appointment.status,
         date = appointment.date,
@@ -358,6 +431,12 @@ export class AppointmentService {
                   `,
       };
       this.sendMail(rdvChanges);
+
+      return {
+        success: "success",
+        response: "email sent successfully",
+      };
+
     } catch (error) {
       console.log(error.message);
       return {
@@ -370,10 +449,17 @@ export class AppointmentService {
   //cancel == delete appointment
   public async CancelAppointment(AppointmentId) {
     try {
+
       var appointment = await this.AppointmentRepository.findByPk(
         AppointmentId
       );
       appointment.destroy();
+
+      return {
+        success: "success",
+        response: "apoointment canceled",
+      };
+
     } catch (error) {
       console.log(error.message);
       return {
@@ -383,15 +469,21 @@ export class AppointmentService {
     }
   }
 
-
   //after pass appointment change status to Archived
   public async ArchiveAppointment(AppointmentId) {
     try {
       var appointment = await this.AppointmentRepository.findByPk(
         AppointmentId
       );
+
       appointment.status = AppoinStatus.Archived;
       appointment.save();
+
+      return {
+        success: "success",
+        response: "appointment archived",
+      };
+
     } catch (error) {
       console.log(error.message);
       return {

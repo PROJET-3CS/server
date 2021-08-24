@@ -26,9 +26,10 @@ export class appointmentController {
     return this.appointmentService.getAll_Appointment();
   }
 
-  @Get("my_appointment/:patientId")
-  async my_appointment(@Param("patientId") patientId: number) {
-    return this.appointmentService.my_appointment(patientId);
+  //get my appoitnment
+  @Get("my_appointment/:id")
+  async my_appointment(@Param("id") id: number) {
+    return this.appointmentService.my_appointment(id);
   }
 
   @Get("ask_for_appointment?")
@@ -88,7 +89,7 @@ export class appointmentController {
     });
   }
 
-  @Post("demand_Appointment_Collectif")
+  @Post("demand_Appointment_collectif")
   async demandAppointmentCollectif(
     @Body("emailList") emailList: [string],
     @Body("promo") promo: number,
@@ -104,6 +105,8 @@ export class appointmentController {
       groupe,
       start_time,
       end_time,
+      description,
+      date
     });
   }
 

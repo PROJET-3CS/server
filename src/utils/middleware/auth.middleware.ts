@@ -7,6 +7,8 @@ import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { User } from "src/modules/users/models/user.entity";
 const { Op } = require("sequelize");
+import * as dotenv from "dotenv";
+dotenv.config();
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -14,7 +16,7 @@ export class AuthMiddleware implements NestMiddleware {
     //   if (req.headers.authorization && (req.headers.authorization as string).split(' ')[0] === 'Bearer') {
 
     //     const token = (req.headers.authorization as string).split(' ')[1];
-    //     const decoded: any = jwt.verify(token, 'JWT_KEY');
+    //     const decoded: any = jwt.verify(token, process.env.JWT_KEY);
     //     const user = await User.findOne<User>({
     //         where: {
     //             [Op.and]: [
