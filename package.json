@@ -43,6 +43,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sequelize": "^6.6.5",
+    "sequelize-cli": "^6.2.0",
     "sequelize-typescript": "^2.1.0",
     "swagger": "^0.7.5",
     "swagger-ui-express": "^4.1.6"

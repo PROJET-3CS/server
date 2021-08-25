@@ -177,7 +177,8 @@ export class UserService {
         return { status: "success", body: "user created successfuly" };
       }
       return { status: "failed", body: "this email already exists" };
-    } catch (erroe) {
+    } catch (err) {
+      console.log(err.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
