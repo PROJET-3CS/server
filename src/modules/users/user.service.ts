@@ -18,6 +18,13 @@ export class UserService {
     @Inject("UserRepository") private readonly userRepository: typeof User,
     @Inject("UserRequestsRepository")
     private readonly userRequestsRepository: typeof UserRequests,
+<<<<<<< HEAD
+=======
+    @Inject("MedecinRepository")
+    private readonly MedecinRepository: typeof Doctor,
+    @Inject("PatientRepository")
+    private readonly PatientRepository: typeof Patient
+>>>>>>> migration
   ) {}
 
   async create(user: any): Promise<User> {
@@ -26,7 +33,21 @@ export class UserService {
     return userWithoutPwd;
   }
 
+<<<<<<< HEAD
   public async sendMail(mailOptions: MailOptionsDto) {
+=======
+  async createMedcin(body: string) {
+    var doctor = await this.MedecinRepository.create(body);
+    return doctor;
+  }
+
+  async createPatient(body: string) {
+    var patient = await this.PatientRepository.create(body);
+    return patient;
+  }
+
+  async sendMail(mailOptions: MailOptionsDto) {
+>>>>>>> migration
     let transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -177,7 +198,8 @@ export class UserService {
         return { status: "success", body: "user created successfuly" };
       }
       return { status: "failed", body: "this email already exists" };
-    } catch (erroe) {
+    } catch (err) {
+      console.log(err.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",
