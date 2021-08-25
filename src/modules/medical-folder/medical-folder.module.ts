@@ -1,31 +1,27 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../database/database.module";
-import { UserController } from "./user.controller";
-import { UserService } from "./user.service";
-import {usersProvider, usersRequestsProvider } from "./user.provider";
-import { MedicalFolderService } from "../medical-folder/medical-folder.service";
+import { MedicalFolderController } from "./medical-folder.controller";
 import {
   medicalFolderProvider,
   medicamentProvider,
   generalIllnessProvider,
   allergicReactionProvider,
   surgicalInterventionProvider,
-} from "../medical-folder/medical-folder.provider";
+} from "./medical-folder.provider";
+import { MedicalFolderService } from "./medical-folder.service";
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [UserController],
+  controllers: [MedicalFolderController],
+
   providers: [
-    UserService,
     MedicalFolderService,
-    usersProvider,
-    usersRequestsProvider,
     medicalFolderProvider,
     medicamentProvider,
     generalIllnessProvider,
     allergicReactionProvider,
     surgicalInterventionProvider,
   ],
-  exports: [UserModule],
+  exports: [MedicalFolderModule],
 })
-export class UserModule {}
+export class MedicalFolderModule {}

@@ -5,12 +5,11 @@ export class UserDto {
   lastname: String;
   email: String;
   gender: Gender;
-  bird;
-  thDay: String;
+  birthDay: String;
   birthPlace: String;
   adress: String;
   phone: Number;
   speciality?: String;
   typePatient?: String;
-  //   age: Number;
+  age: Number;
 }
