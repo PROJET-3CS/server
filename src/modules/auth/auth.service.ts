@@ -20,55 +20,53 @@ export class AuthService {
   };
 
   public async login(loginObject: any): Promise<object> {
+    try {
+      //safeCoding ES6 take only email,pwd
+      const { email, password } = loginObject;
 
-    try{
-    
-    //safeCoding ES6 take only email,pwd
-    const { email, password } = loginObject;
+      console.log(email);
 
-    const user = await this.userRepository.findOne({
-      where: {
-        [Op.and]: [{ email: email }, { password: password }],
-      },
-    });
-    
-    //if user not found throw Unauthorized Error
-    if (!user) {
+      const user = await this.userRepository.findOne({
+        where: {
+          [Op.and]: [{ email: email }, { password: password }],
+        },
+      });
 
-      throw new UnauthorizedException();
+      console.log(user);
 
-    } else {
+      //if user not found throw Unauthorized Error
+      if (!user) {
+        throw new UnauthorizedException();
+      } else {
+        //payload JWT
+        const payload = {
+          id: user.id,
+          email: user.email,
+          password: user.password,
+        };
 
-      //payload JWT
-      const payload = {
-        id: user.id,
-        email: user.email,
-        password: user.password,
+        var token = jwt.sign(
+          payload,
+          process.env.JWT_KEY || "JWT_KEY",
+          this._options
+        );
+
+        user.password = undefined;
+
+        return {
+          status: "success",
+          body: { token, user },
+        };
+      }
+    } catch {
+      return {
+        status: "failed",
+        body: "an error occured , please try again",
       };
-
-      var token = jwt.sign(
-        payload,
-        process.env.JWT_KEY || "JWT_KEY",
-        this._options
-      );
-
-      user.password = undefined;
-
-      return { token, user };
-    }
-   }catch{
-
-    return { 
-     status: "failed",
-     body: "an error occured , please try again",
-    }
-
     }
   }
   public async verify_token(token: string): Promise<Object> {
-
     try {
-
       //verify if token is valid
       const isValid: Object = jwt.verify(
         token,
@@ -89,12 +87,16 @@ export class AuthService {
       }
 
       return {
-        status:'failed',body:"Valid user",
-        user, isValid: isValid && user ? true : false 
+        user,
+        isValid: isValid && user ? true : false,
       };
-
     } catch (error) {
-      return { status:'failed', body:"not Valid user", user: "", isValid: false };
+      return {
+        status: "failed",
+        body: "not Valid user",
+        user: "",
+        isValid: false,
+      };
     }
   }
 }

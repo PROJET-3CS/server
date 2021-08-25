@@ -22,7 +22,7 @@ export class UserService {
     @Inject("MedecinRepository")
     private readonly MedecinRepository: typeof Doctor,
     @Inject("PatientRepository")
-    private readonly PatientRepository: typeof Patient,
+    private readonly PatientRepository: typeof Patient
   ) {}
 
   async create(user: any): Promise<User> {
@@ -31,13 +31,12 @@ export class UserService {
     return userWithoutPwd;
   }
 
-  async createMedcin(body:string){
+  async createMedcin(body: string) {
     var doctor = await this.MedecinRepository.create(body);
     return doctor;
-    
   }
-  
-  async createPatient(body:string){
+
+  async createPatient(body: string) {
     var patient = await this.PatientRepository.create(body);
     return patient;
   }
@@ -193,7 +192,8 @@ export class UserService {
         return { status: "success", body: "user created successfuly" };
       }
       return { status: "failed", body: "this email already exists" };
-    } catch (erroe) {
+    } catch (err) {
+      console.log(err.message);
       return {
         status: "failed",
         body: "an error occured , please try again later",

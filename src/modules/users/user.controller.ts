@@ -28,7 +28,6 @@ export class UserController {
 
   //get user by id
   @ApiCreatedResponse({ type: UserDto })
-  @ApiParam({ name: "id", required: true })
   @Get(":id")
   async getUser(@Param("id") id: number) {
     return this.usersService.getUser(id);
@@ -62,6 +61,7 @@ export class UserController {
     if (firstname && lastname && email && role)
       return await this.usersService.createUserWithConfirmationToken(newUser);
 
+      
     return { status: "failed", body: "needed credentials" };
   }
 
