@@ -8,6 +8,10 @@ import { User } from "../users/models/user.entity";
 const { Op } = require("sequelize");
 dotenv.config();
 
+const chalk = require('chalk');
+const error = chalk.bold.red;
+const warning = chalk.keyword('orange');
+
 @Injectable()
 export class AppointmentService {
   constructor(
@@ -54,8 +58,12 @@ export class AppointmentService {
           body: "Doctor not available ,he has another appointment at this time",
         };
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
+      return {
+        success: "failed",
+        body: "Sorry something went wrong !",
+      };
     }
   }
 
@@ -75,8 +83,8 @@ export class AppointmentService {
         success: "success",
         response: appointment,
       };
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -118,8 +126,8 @@ export class AppointmentService {
           response: appointment,
         };
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -184,8 +192,8 @@ export class AppointmentService {
         status: "failed",
         body: "params should contain appointmentId, doctorId, date, start_time, end_time",
       };
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -202,8 +210,8 @@ export class AppointmentService {
         success: "success",
         response: appointments,
       };
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -281,8 +289,8 @@ export class AppointmentService {
           body: "Choose one option with patientId or TargetEmail not both ",
         };
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -367,8 +375,8 @@ export class AppointmentService {
           };
         }
       }
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -424,8 +432,8 @@ export class AppointmentService {
         success: "success",
         response: "email sent successfully",
       };
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -468,8 +476,8 @@ export class AppointmentService {
         success: "success",
         response: "appointment archived",
       };
-    } catch (error) {
-      console.log(error.message);
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again later",

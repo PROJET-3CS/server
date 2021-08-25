@@ -2,6 +2,10 @@ import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { User } from "../users/models/user.entity";
 import * as jwt from "jsonwebtoken";
 const { Op } = require("sequelize");
+const chalk = require('chalk');
+const error = chalk.bold.red;
+const warning = chalk.keyword('orange');
+
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -24,15 +28,11 @@ export class AuthService {
       //safeCoding ES6 take only email,pwd
       const { email, password } = loginObject;
 
-      console.log(email);
-
       const user = await this.userRepository.findOne({
         where: {
           [Op.and]: [{ email: email }, { password: password }],
         },
       });
-
-      console.log(user);
 
       //if user not found throw Unauthorized Error
       if (!user) {
@@ -58,7 +58,8 @@ export class AuthService {
           body: { token, user },
         };
       }
-    } catch {
+    } catch(err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "an error occured , please try again",
@@ -90,7 +91,8 @@ export class AuthService {
         user,
         isValid: isValid && user ? true : false,
       };
-    } catch (error) {
+    } catch (err) {
+      console.log(error(err.message))
       return {
         status: "failed",
         body: "not Valid user",
