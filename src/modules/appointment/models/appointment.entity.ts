@@ -60,7 +60,10 @@ import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
     })
     status: AppoinStatus;
   
+  
+    @BelongsTo(() => User, { onDelete: "no action", foreignKey: "patientId"})
+    patient: User; 
     
-    @BelongsTo(() => User)
-    user: User;  
+    @BelongsTo(() => User, { onDelete: "no action", foreignKey: "doctorId"})
+    doctor: User;  
   }
