@@ -6,7 +6,7 @@ import { usersProvider, usersRequestsProvider } from '../users/user.provider';
 import { UserService } from '../users/user.service';
 import {appointmentController} from './appointment.controller'
 import { AppointmentService } from './appointment.service';
-import { AppointmentProvider } from './appoitment.provider';
+import { AppointmentProvider, AttendanceProvider, CollectifAppointmentProvider } from './appoitment.provider';
 @Module({
     imports: [DatabaseModule],
     controllers: [appointmentController],
@@ -23,7 +23,8 @@ import { AppointmentProvider } from './appoitment.provider';
         generalIllnessProvider,
         allergicReactionProvider,
         surgicalInterventionProvider,
-
+        AttendanceProvider,
+        CollectifAppointmentProvider
 
     ],
     exports: [],

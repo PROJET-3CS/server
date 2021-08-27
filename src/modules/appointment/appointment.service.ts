@@ -5,6 +5,9 @@ import * as nodemailer from "nodemailer";
 import { Appointment } from "./models/appointment.entity";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 import { User } from "../users/models/user.entity";
+import { CollectifAppointment } from "./models/collectifAppointment.entity";
+import { Attendance } from "./models/attendance.etity";
+import { CollectifAppointmentProvider } from "./appoitment.provider";
 const { Op } = require("sequelize");
 dotenv.config();
 
@@ -18,7 +21,12 @@ export class AppointmentService {
     @Inject("AppointmentRepository")
     private readonly AppointmentRepository: typeof Appointment,
     @Inject("UserRepository")
-    private readonly userRepository: typeof User
+    private readonly userRepository: typeof User,
+    @Inject("AttendanceRepository")
+    private readonly AttendanceRepository: typeof Attendance,
+    @Inject("CollectifAppointmentRepository")
+    private readonly CollectifAppointmentRepository: typeof CollectifAppointment,
+    
   ) {}
 
   private async doctorAvailability(start_time, end_time): Promise<boolean> {
@@ -31,6 +39,28 @@ export class AppointmentService {
       return true;
     } else return false;
   }
+
+  public async createAttendance(appointment){
+    // var rdv = await this.AttendanceRepository.create(appointment)
+    var rdv = await this.CollectifAppointmentRepository.findAll({
+      
+      include: [
+        {
+          model: CollectifAppointment,
+          as: 'Attend',
+        },   
+      ] 
+    })
+    return rdv;
+  }
+
+  public async createAttendanceColl(appointment){
+    var rdv = await this.CollectifAppointmentRepository.create(appointment)
+    const attendance = await this.AttendanceRepository.create({
+      patientId:appointment.patientId,
+      appointmentColId:1
+    })
+   }
 
   public async createAppointment(appointment) {
     try {
@@ -302,6 +332,7 @@ export class AppointmentService {
   public async demandAppointmentCollectif(listPatient) {
     try {
       const {
+        doctorId,
         promo,
         groupe,
         emailList,
@@ -318,6 +349,17 @@ export class AppointmentService {
           body: "Choose one option with emailtList or Promo & Groupe not both",
         };
       } else {
+        var collAppointment = await this.CollectifAppointmentRepository.create({
+          doctorId,
+          description,
+          date,
+          start_time,
+          end_time,
+        })
+        const attendance = await this.AttendanceRepository.create({
+          patientId:2,
+          appointmentColId:1
+        })
         //if option is promo&&group
         if (promo && groupe) {
           const patients = await this.userRepository.findAll({
@@ -329,7 +371,7 @@ export class AppointmentService {
             },
           });
 
-          patients.forEach((patient) => {
+           patients.forEach( (patient) => {
             let promoGrpMails = {
               from: process.env.MAIL_USER,
               to: patient.email,
@@ -343,8 +385,13 @@ export class AppointmentService {
                       </center>
                       `,
             };
-            this.sendMail(promoGrpMails);
+             this.sendMail(promoGrpMails);
+            console.log(patient.id,);
+            
+
           });
+
+
 
           return {
             success: "success",
@@ -369,10 +416,14 @@ export class AppointmentService {
             };
             this.sendMail(collectifMail);
           });
+
+
+
           return {
             success: "success",
             response: "email sent successfully",
           };
+          
         }
       }
     } catch (err) {

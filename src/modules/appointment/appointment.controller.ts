@@ -23,6 +23,23 @@ export class appointmentController {
     return this.appointmentService.createAppointment(appointment);
   }
 
+  @Post("attendance")
+  async createAttendance(@Body() collAppointment) {
+    return this.appointmentService.createAttendance(collAppointment);
+    //  return this.appointmentService.createAttendance(collAppointment);
+
+  }
+
+  @Post("Coll")
+  async createAttendanceColl(@Body() collAppointment) {
+    return this.appointmentService.createAttendanceColl(collAppointment);
+  }
+
+
+  
+
+
+  
   @Get()
   async getAll_Appointment() {
     return this.appointmentService.getAll_Appointment();
@@ -110,6 +127,7 @@ export class appointmentController {
       "demand Appointment collectif with emailList[] or (Promo & groupe) not both",
   })
   async demandAppointmentCollectif(
+    @Body("doctorId") doctorId: number,
     @Body("emailList") emailList: [string],
     @Body("promo") promo: number,
     @Body("groupe") groupe: number,
@@ -119,6 +137,7 @@ export class appointmentController {
     @Body("end_time") end_time: Date
   ) {
     return this.appointmentService.demandAppointmentCollectif({
+      doctorId,
       emailList,
       promo,
       groupe,

@@ -7,8 +7,11 @@ import {
   IsEmail,
   HasOne,
   HasMany,
+  BelongsToMany,
 } from "sequelize-typescript";
 import { Appointment } from "src/modules/appointment/models/appointment.entity";
+import { Attendance } from "src/modules/appointment/models/attendance.etity";
+import { CollectifAppointment } from "src/modules/appointment/models/collectifAppointment.entity";
 import { Gender } from "../../../shared/enums/gender.enum";
 
 import { MedicalFolder } from "../../medical-folder/models/medical-folder.entity";
@@ -89,4 +92,10 @@ export class User extends Model {
 
   @HasMany(() => Appointment)
   appointment: Appointment[]
+
+
+  @BelongsToMany(() => CollectifAppointment, { foreignKey: "id",as: 'Attend',hooks: true, through: () => Attendance })
+  collappointments: CollectifAppointment[]
+
+  
 }
