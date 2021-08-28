@@ -9,10 +9,9 @@ import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 
 import { CreateUserDto } from "./dto/create-user.dto";
 
-const chalk = require('chalk');
+const chalk = require("chalk");
 const error = chalk.bold.red;
-const warning = chalk.keyword('orange');
-
+const warning = chalk.keyword("orange");
 
 @Injectable()
 export class UserService {
@@ -21,7 +20,7 @@ export class UserService {
 
     @Inject("UserRepository") private readonly userRepository: typeof User,
     @Inject("UserRequestsRepository")
-    private readonly userRequestsRepository: typeof UserRequests,
+    private readonly userRequestsRepository: typeof UserRequests
   ) {}
 
   async create(user: any): Promise<User> {
@@ -56,7 +55,7 @@ export class UserService {
       limit: 10,
       offset: pageNumber * 10,
     });
-    console.log(warning(Promise.resolve(users.rows)))
+    console.log(warning(Promise.resolve(users.rows)));
 
     return users;
   }
@@ -81,7 +80,7 @@ export class UserService {
         body: "password doesn't match the confirmation password",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -103,7 +102,7 @@ export class UserService {
       this.medicalFolderService.create(user.id);
       return { status: "sucess", body: user };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "an error occured" };
     }
   }
@@ -126,7 +125,7 @@ export class UserService {
       }
       return { status: "failed", body: "user doesn't exists" };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "An error occured , try later" };
     }
   }
@@ -146,7 +145,7 @@ export class UserService {
         },
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "An error occured , try later" };
     }
   }
@@ -183,7 +182,7 @@ export class UserService {
       }
       return { status: "failed", body: "this email already exists" };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -225,7 +224,7 @@ export class UserService {
         body: "please check your mail",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -253,7 +252,7 @@ export class UserService {
 
       return await this.updatePassword(userId, password, passwordConfirmation);
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
     }
   }
 
@@ -288,7 +287,7 @@ export class UserService {
         body: "registration request for this user already exist",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured, please try agian later",
@@ -318,7 +317,7 @@ export class UserService {
         body: "registration request accepted successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured, please try agian later",
@@ -340,7 +339,7 @@ export class UserService {
         body: "registration request declined successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured, please try agian later",
@@ -365,7 +364,7 @@ export class UserService {
         },
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "An error occured , try later" };
     }
   }
@@ -393,7 +392,7 @@ export class UserService {
             email: { [Op.like]: userParams.email || "%" },
             gender: { [Op.like]: userParams.gender || "%" },
             birthPlace: { [Op.like]: userParams.birthPlace || "%" },
-            adress: { [Op.like]: userParams.adress || "%" },
+            address: { [Op.like]: userParams.address || "%" },
             age: { [Op.like]: userParams.age || "%" },
             speciality: { [Op.like]: userParams.speciality || "%" },
             avaialable: { [Op.like]: userParams.avaialable || "%" },
@@ -415,7 +414,7 @@ export class UserService {
         return users;
       }
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "bad params" };
     }
   }

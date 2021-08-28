@@ -49,7 +49,6 @@ export class UserController {
     if (firstname && lastname && email && role)
       return await this.usersService.createUserWithConfirmationToken(newUser);
 
-      
     return { status: "failed", body: "needed credentials" };
   }
 
@@ -111,41 +110,37 @@ export class UserController {
     return await this.usersService.getRequests(pageNumber);
   }
 
-
   //filter Users
-  @Get('/filter/params?')
+  @Get("/filter/params?")
 
   //get query params
   async filterMeth(
-    @Query('firstname')firstname: string,
-    @Query('lastname') lastname: string,
-    @Query('email') email: string,
-    @Query('gender') gender: Gender,
-    @Query('birthPlace') birthPlace: string,
-    @Query('adress') adress: string,
-    @Query('age') age: Number,
-    @Query('speciality') speciality: string,
-    @Query('phone') phone: number,
-    @Query('avaialable') avaialable: number,
-    @Query('typePatient') typePatient: string,
-    @Query('status') status: string,
-  ) 
-  {         
-         return await this.usersService.filterMeth(
-           {
-            firstname,
-            lastname,
-            email,
-            gender,
-            birthPlace,
-            adress,
-            age,
-            speciality,
-            avaialable,
-            phone,
-            typePatient,
-            status
-           }
-         );
+    @Query("firstname") firstname: string,
+    @Query("lastname") lastname: string,
+    @Query("email") email: string,
+    @Query("gender") gender: Gender,
+    @Query("birthPlace") birthPlace: string,
+    @Query("address") address: string,
+    @Query("age") age: Number,
+    @Query("speciality") speciality: string,
+    @Query("phone") phone: number,
+    @Query("avaialable") avaialable: number,
+    @Query("typePatient") typePatient: string,
+    @Query("status") status: string
+  ) {
+    return await this.usersService.filterMeth({
+      firstname,
+      lastname,
+      email,
+      gender,
+      birthPlace,
+      address,
+      age,
+      speciality,
+      avaialable,
+      phone,
+      typePatient,
+      status,
+    });
   }
 }

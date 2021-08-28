@@ -50,7 +50,7 @@ export class User extends Model {
   birthPlace: String;
 
   @Column
-  adress: String;
+  address: String;
 
   @Column
   phone: Number;
@@ -85,17 +85,18 @@ export class User extends Model {
   @Column
   token: String;
 
-
   // Association with medical folder table __ OneToOne Relation __
   @HasOne(() => MedicalFolder)
   medicalFolder: MedicalFolder;
 
   @HasMany(() => Appointment)
-  appointment: Appointment[]
+  appointment: Appointment[];
 
-
-  @BelongsToMany(() => CollectifAppointment, { foreignKey: "id",as: 'Attend',hooks: true, through: () => Attendance })
-  collappointments: CollectifAppointment[]
-
-  
+  @BelongsToMany(() => CollectifAppointment, {
+    foreignKey: "id",
+    as: "Attend",
+    hooks: true,
+    through: () => Attendance,
+  })
+  collappointments: CollectifAppointment[];
 }
