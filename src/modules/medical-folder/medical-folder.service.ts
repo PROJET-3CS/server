@@ -6,9 +6,9 @@ import { GeneralIllness } from "./models/general-illness.entity";
 import { AllergicReaction } from "./models/allergic-reaction.entity";
 import { SurgicalIntervention } from "./models/surgical-intervention.entity";
 
-const chalk = require('chalk');
+const chalk = require("chalk");
 const error = chalk.bold.red;
-const warning = chalk.keyword('orange');
+const warning = chalk.keyword("orange");
 
 @Injectable()
 export class MedicalFolderService {
@@ -59,7 +59,7 @@ export class MedicalFolderService {
         message: "folder has been activated successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         message: "an error occured, please try agian later",
@@ -81,7 +81,7 @@ export class MedicalFolderService {
         message: "folder has been archived successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         message: "an error occured, please try agian later",
@@ -119,7 +119,7 @@ export class MedicalFolderService {
       folder.save();
       return { status: "success", message: folder };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         message: "an error occured, please try again later",
@@ -138,26 +138,26 @@ export class MedicalFolderService {
       );
       return { status: "success", body: "medicaments added successfuly" };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
   }
 
   public async addGeneralIllness(userId: number, body) {
     try {
-      let { name, description, path } = body;
+      let { name, description, path, type } = body;
       let date = new Date().getDate();
       this.generalIllnessRepository.create({
         medicalFolderId: userId,
         name,
         description,
-        // date,
+        type,
         path,
       });
 
       return { status: "success", body: "general illness added successfuly" };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
   }
@@ -179,7 +179,7 @@ export class MedicalFolderService {
         body: "surgical intervention added successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
   }
@@ -199,7 +199,7 @@ export class MedicalFolderService {
         body: "allergic reaction added successfuly",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
   }

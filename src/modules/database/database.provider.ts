@@ -26,9 +26,9 @@ export const databaseProvider = {
       SurgicalIntervention,
       Appointment,
       CollectifAppointment,
-      Attendance
+      Attendance,
     ]);
-    // await sequelize.sync({ force: true });
+    await sequelize.sync({ force: true });
     return sequelize;
   },
 };
