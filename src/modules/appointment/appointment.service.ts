@@ -7,13 +7,12 @@ import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 import { User } from "../users/models/user.entity";
 import { CollectifAppointment } from "./models/collectifAppointment.entity";
 import { Attendance } from "./models/attendance.etity";
-import { CollectifAppointmentProvider } from "./appoitment.provider";
 const { Op } = require("sequelize");
 dotenv.config();
 
-const chalk = require('chalk');
+const chalk = require("chalk");
 const error = chalk.bold.red;
-const warning = chalk.keyword('orange');
+const warning = chalk.keyword("orange");
 
 @Injectable()
 export class AppointmentService {
@@ -25,8 +24,7 @@ export class AppointmentService {
     @Inject("AttendanceRepository")
     private readonly AttendanceRepository: typeof Attendance,
     @Inject("CollectifAppointmentRepository")
-    private readonly CollectifAppointmentRepository: typeof CollectifAppointment,
-    
+    private readonly CollectifAppointmentRepository: typeof CollectifAppointment
   ) {}
 
   private async doctorAvailability(start_time, end_time): Promise<boolean> {
@@ -40,27 +38,28 @@ export class AppointmentService {
     } else return false;
   }
 
-  public async createAttendance(appointment){
-    // var rdv = await this.AttendanceRepository.create(appointment)
-    var rdv = await this.CollectifAppointmentRepository.findAll({
-      
-      include: [
-        {
-          model: CollectifAppointment,
-          as: 'Attend',
-        },   
-      ] 
-    })
-    return rdv;
+  private async creatAttendance(collAppointmentId, patientId) {
+    try {
+      const attendance = await this.AttendanceRepository.create({
+        patientId: patientId,
+        appointmentColId: collAppointmentId,
+      });
+    } catch (error) {
+      return {
+        success: "failed",
+        body: "Patient already in this apoointment",
+      };
+    }
   }
 
-  public async createAttendanceColl(appointment){
-    var rdv = await this.CollectifAppointmentRepository.create(appointment)
-    const attendance = await this.AttendanceRepository.create({
-      patientId:appointment.patientId,
-      appointmentColId:1
-    })
-   }
+  private async getUserByEmail(email) {
+    const user = await this.userRepository.findOne({
+      where: {
+        email: email,
+      },
+    });
+    return user;
+  }
 
   public async createAppointment(appointment) {
     try {
@@ -89,7 +88,7 @@ export class AppointmentService {
         };
       }
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         success: "failed",
         body: "Sorry something went wrong !",
@@ -109,12 +108,18 @@ export class AppointmentService {
         },
       });
 
+      var collectifAppointment = await this.userRepository.findAll({
+        where: { id: id },
+        attributes: {exclude: ['password','token']},
+        include: [{ model: CollectifAppointment }],
+      });
+
       return {
         success: "success",
-        response: appointment,
+        response: { appointment, collectifAppointment },
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -157,7 +162,7 @@ export class AppointmentService {
         };
       }
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -223,7 +228,7 @@ export class AppointmentService {
         body: "params should contain appointmentId, doctorId, date, start_time, end_time",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -234,14 +239,18 @@ export class AppointmentService {
   //get ALL appointments
   public async getAll_Appointment() {
     try {
-      const appointments = await this.AppointmentRepository.findAll();
+      const individualAppointment = await this.AppointmentRepository.findAll();
 
+      const collectifAppointment =
+        await this.CollectifAppointmentRepository.findAll({
+          include: [{ model: User, attributes: {exclude: ['password','token']}}],
+        });
       return {
         success: "success",
-        response: appointments,
+        response: { individualAppointment, collectifAppointment },
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -320,7 +329,7 @@ export class AppointmentService {
         };
       }
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -355,11 +364,8 @@ export class AppointmentService {
           date,
           start_time,
           end_time,
-        })
-        const attendance = await this.AttendanceRepository.create({
-          patientId:2,
-          appointmentColId:1
-        })
+        });
+
         //if option is promo&&group
         if (promo && groupe) {
           const patients = await this.userRepository.findAll({
@@ -371,7 +377,10 @@ export class AppointmentService {
             },
           });
 
-           patients.forEach( (patient) => {
+          for (const patient of patients) {
+            //add record to junction table (appointment,patient)
+            await this.creatAttendance(collAppointment.id, patient.id);
+
             let promoGrpMails = {
               from: process.env.MAIL_USER,
               to: patient.email,
@@ -385,13 +394,8 @@ export class AppointmentService {
                       </center>
                       `,
             };
-             this.sendMail(promoGrpMails);
-            console.log(patient.id,);
-            
-
-          });
-
-
+            this.sendMail(promoGrpMails);
+          }
 
           return {
             success: "success",
@@ -400,34 +404,40 @@ export class AppointmentService {
 
           //if option is EmailList (EmailList type table)
         } else if (emailList) {
-          emailList.forEach((email) => {
-            let collectifMail = {
-              from: process.env.MAIL_USER,
-              to: email,
-              subject: "Appointment",
-              text: " Appointment request",
-              html: `
+          for (const email of emailList) {
+            const user = await this.getUserByEmail(email);
+
+            if (!user) {
+              return {
+                status: "failed",
+                body: ` ${email} is invalid email`,
+              };
+            } else {
+              await this.creatAttendance(collAppointment.id, user.id);
+              let collectifMail = {
+                from: process.env.MAIL_USER,
+                to: email,
+                subject: "Appointment",
+                text: " Appointment request",
+                html: `
                       <center>
                       <h1 style='color:green'>You Are invited to an Appointment</h1>
                       <h2 style='color:red'>Time : ${date} from ${start_time} to ${end_time} </h2>
                       <h3 style='color:blue'>${description} </h3>
                       </center>
                       `,
-            };
-            this.sendMail(collectifMail);
-          });
-
-
-
+              };
+              this.sendMail(collectifMail);
+            }
+          }
           return {
             success: "success",
             response: "email sent successfully",
           };
-          
         }
       }
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -484,7 +494,7 @@ export class AppointmentService {
         response: "email sent successfully",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",
@@ -492,6 +502,57 @@ export class AppointmentService {
     }
   }
 
+  public async EditCollAppointment(EditInfo) {
+    try {
+      var appointment = await this.CollectifAppointmentRepository.findOne({
+        where: { id: EditInfo.AppointmentId },
+        include: [{ model: User }],
+      });
+
+      //update changes
+      const {
+        status = appointment.status,
+        date = appointment.date,
+        description = appointment.description,
+        start_time = appointment.start_time,
+        end_time = appointment.end_time,
+      } = EditInfo;
+      (appointment.status = status),
+        (appointment.date = date),
+        (appointment.description = description),
+        (appointment.start_time = start_time),
+        (appointment.end_time = end_time),
+        appointment.save();
+
+      for (const patient of appointment["Attend"]) {
+        let rdvChanges = {
+          from: process.env.MAIL_USER,
+          to: patient.email,
+          subject: "Appointment",
+          text: " Appointment Changes",
+          html: `
+                  <center><h2>Hello Mr ${patient.firstname} ${patient.lastname} </h2>
+                  <h1 style='color:green'>You Are Appointment changed </h1>
+                  <h2 style='color:red'>Time : ${date} from ${start_time} to ${end_time} </h2>
+                  <h3 style='color:blue'>${description} </h3>
+                  </center>
+                  `,
+        };
+        this.sendMail(rdvChanges);
+      }
+
+      return {
+        success: "success",
+        response: "email sent successfully",
+      };
+    } catch (err) {
+      console.log(error(err.message));
+      return {
+        status: "failed",
+        body: "an error occured , please try again later",
+      };
+    }
+  }
   //cancel == delete appointment
   public async CancelAppointment(AppointmentId) {
     try {
@@ -513,9 +574,30 @@ export class AppointmentService {
     }
   }
 
+  public async CancelCollAppointment(AppointmentId) {
+    try {
+      var appointment = await this.CollectifAppointmentRepository.findByPk(
+        AppointmentId
+      );
+      appointment.destroy();
+
+      return {
+        success: "success",
+        response: "apoointment canceled",
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        status: "failed",
+        body: "an error occured , please try again later",
+      };
+    }
+  }
+
   //after pass appointment change status to Archived
   public async ArchiveAppointment(AppointmentId) {
     try {
+      
       var appointment = await this.AppointmentRepository.findByPk(
         AppointmentId
       );
@@ -528,7 +610,31 @@ export class AppointmentService {
         response: "appointment archived",
       };
     } catch (err) {
-      console.log(error(err.message))
+      console.log(error(err.message));
+      return {
+        status: "failed",
+        body: "an error occured , please try again later",
+      };
+    }
+  }
+
+  //after pass appointment change status to Archived
+  public async ArchiveCollAppointment(AppointmentId) {
+    try {
+
+      var appointment = await this.CollectifAppointmentRepository.findByPk(
+        AppointmentId
+      );
+
+      appointment.status = AppoinStatus.Archived;
+      appointment.save();
+
+      return {
+        success: "success",
+        response: "appointment archived",
+      };
+    } catch (err) {
+      console.log(error(err.message));
       return {
         status: "failed",
         body: "an error occured , please try again later",

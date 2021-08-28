@@ -94,8 +94,6 @@ export class User extends Model {
   appointment: Appointment[]
 
 
-  @BelongsToMany(() => CollectifAppointment, { foreignKey: "id",as: 'Attend',hooks: true, through: () => Attendance })
+  @BelongsToMany(() => CollectifAppointment, {as: 'Attend',hooks: true, through: () => Attendance })
   collappointments: CollectifAppointment[]
-
-  
 }

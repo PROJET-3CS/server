@@ -7,7 +7,7 @@ import {
     BelongsTo,
     BelongsToMany,
   } from "sequelize-typescript";
-import { Sequelize } from "sequelize/types";
+import { HasManyAddAssociationMixin, Sequelize } from "sequelize/types";
 import { User } from "src/modules/users/models/user.entity";
 
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
@@ -23,12 +23,6 @@ import { Attendance } from "./attendance.etity";
     })
     public id: number;
 
-    @ForeignKey(() => User)
-    @Column({
-      type: DataType.INTEGER,
-      field: "patientId",
-    })
-    patientId: number; 
 
     @ForeignKey(() => User)
     @Column({
@@ -57,13 +51,14 @@ import { Attendance } from "./attendance.etity";
 
 
     @Column({ 
-      type: DataType.ENUM(AppoinStatus.SentByDoctorOrAdmin,AppoinStatus.SentByPatient, AppoinStatus.Accepted, AppoinStatus.Refused, AppoinStatus.Archived) ,
+      type: DataType.ENUM(AppoinStatus.SentByDoctorOrAdmin,AppoinStatus.Archived) ,
     })
     status: AppoinStatus;
   
 
-    @BelongsToMany(() => User, { foreignKey: "patientId",as: 'Attend',hooks: true, through: () => Attendance }
+    @BelongsToMany(() => User, {as: 'Attend',hooks: true, through: () => Attendance }
     )
     patients: User[]
 
+    // public addAttendance!: BelongsToMaAddAssociationMixin<Attendance, number>;
   }

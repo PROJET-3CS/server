@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-} from "@nestjs/common";
-import {
-  ApiCreatedResponse,
-  ApiTags,
-} from "@nestjs/swagger";
+import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { AppointmentService } from "./appointment.service";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 
@@ -23,23 +13,6 @@ export class appointmentController {
     return this.appointmentService.createAppointment(appointment);
   }
 
-  @Post("attendance")
-  async createAttendance(@Body() collAppointment) {
-    return this.appointmentService.createAttendance(collAppointment);
-    //  return this.appointmentService.createAttendance(collAppointment);
-
-  }
-
-  @Post("Coll")
-  async createAttendanceColl(@Body() collAppointment) {
-    return this.appointmentService.createAttendanceColl(collAppointment);
-  }
-
-
-  
-
-
-  
   @Get()
   async getAll_Appointment() {
     return this.appointmentService.getAll_Appointment();
@@ -148,37 +121,82 @@ export class appointmentController {
     });
   }
 
-  @Post("edit_appointment/:AppointmentId")
+  @Post("edit_appointment/:appointment_type/:AppointmentId")
   @ApiCreatedResponse({ description: "Edit Appointment" })
   async EditAppointment(
     @Param("AppointmentId") AppointmentId: number,
+    @Param("appointment_type") appointment_type: string,
     @Body("status") status: AppoinStatus,
     @Body("date") date: Date,
     @Body("description") description: string,
     @Body("start_time") start_time: Date,
     @Body("end_time") end_time: Date
   ) {
-    return this.appointmentService.EditAppointment({
-      AppointmentId,
-      status,
-      date,
-      description,
-      start_time,
-      end_time,
-    });
+    if (appointment_type === "0") {
+      return this.appointmentService.EditAppointment({
+        AppointmentId,
+        status,
+        date,
+        description,
+        start_time,
+        end_time,
+      });
+    } else if (appointment_type === "1") {
+      console.log("coll");
+
+      return this.appointmentService.EditCollAppointment({
+        AppointmentId,
+        status,
+        date,
+        description,
+        start_time,
+        end_time,
+      });
+    }
+    return {
+      status: "failed",
+      body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
+    };
   }
 
-  @Delete("cancel_appointment/:AppointmentId")
+  @Delete("cancel_appointment/:appointment_type/:AppointmentId")
   @ApiCreatedResponse({ description: "Cancel or Delete an Appointment" })
-  async CancelAppointment(@Param("AppointmentId") AppointmentId: number) {
-    return this.appointmentService.CancelAppointment(AppointmentId);
+  async CancelAppointment(
+    @Param("AppointmentId") AppointmentId: number,
+    @Param("appointment_type") appointment_type: string
+    ) {
+      if (appointment_type === "0") {
+        return this.appointmentService.CancelAppointment(AppointmentId);
+      }
+      else if (appointment_type === "1"){
+        return this.appointmentService.CancelCollAppointment(AppointmentId);
+      }
+      else{
+        return {
+          status: "failed",
+          body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
+        }; 
+      }
   }
 
-  @Post("archive_appointment/:AppointmentId")
+  @Post("archive_appointment/:appointment_type/:AppointmentId")
   @ApiCreatedResponse({
     description: "Archive Appointment after patient pass it",
   })
-  async ArchiveAppointment(@Param("AppointmentId") AppointmentId: number) {
-    return this.appointmentService.ArchiveAppointment(AppointmentId);
+  async ArchiveAppointment(
+    @Param("AppointmentId") AppointmentId: number,
+    @Param("appointment_type") appointment_type: string
+  ) {
+    if (appointment_type === "0") {
+      return this.appointmentService.ArchiveAppointment(AppointmentId);
+    } else if (appointment_type === "1") {
+      return this.appointmentService.ArchiveCollAppointment(AppointmentId);
+    }
+    else{
+      return {
+        status: "failed",
+        body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
+      }; 
+    }
   }
 }
