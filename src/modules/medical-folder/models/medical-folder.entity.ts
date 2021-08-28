@@ -44,12 +44,11 @@ export class MedicalFolder extends Model {
   })
   status: MedicalFolderStatus;
 
+  @Column
+  socialSecurityNumber: number;
   //Personal infos
   @Column({ type: DataType.INTEGER })
   tall: number;
-
-  @Column({ type: DataType.INTEGER })
-  sjsj: number;
 
   @Column({ type: DataType.INTEGER })
   weight: number;

@@ -95,6 +95,7 @@ export class MedicalFolderService {
       if (!folder)
         return { status: "failed", message: "this folder doesn't exist" };
       const {
+        socialSecurityNumber = folder.socialSecurityNumber,
         tall = folder.tall,
         weight = folder.weight,
         blood = folder.blood,
@@ -106,6 +107,7 @@ export class MedicalFolderService {
         exSmoker = folder.exSmoker,
         other = folder.other,
       } = updatedFolder;
+      folder.socialSecurityNumber = socialSecurityNumber;
       folder.nbrCigarettes = nbrCigarettes;
       folder.tall = tall;
       folder.blood = blood;

@@ -28,7 +28,7 @@ export const databaseProvider = {
       CollectifAppointment,
       Attendance,
     ]);
-    // await sequelize.sync({ force: true });
+    await sequelize.sync({ force: true });
     return sequelize;
   },
 };
