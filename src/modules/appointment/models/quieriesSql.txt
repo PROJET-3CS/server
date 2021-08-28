@@ -1,1 +1,0 @@
-create table Appointments(id int NOT NULL AUTO_INCREMENT UNIQUE,  PRIMARY KEY (id),status varchar(40),patientId int,doctorId int,description varchar(255),date DATE,createdAt date,updatedAt date, FOREIGN KEY (patientId) REFERENCES Users(id),FOREIGN KEY (doctorId) REFERENCES Users(id),start_time TIME,end_time TIME);

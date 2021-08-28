@@ -67,9 +67,6 @@ export class MedicalFolder extends Model {
   })
   blood: Blood;
 
-  @Column
-  imc: string;
-
   //Personal History
   @Column
   smoker: boolean;

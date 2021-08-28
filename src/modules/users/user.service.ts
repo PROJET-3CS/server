@@ -6,8 +6,7 @@ import * as jwt from "jsonwebtoken";
 import { MailOptionsDto } from "./dto/mail-options.dto";
 const { Op } = require("sequelize");
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
-
-import { CreateUserDto } from "./dto/create-user.dto";
+import * as bcrypt from "bcryptjs";
 
 const chalk = require("chalk");
 const error = chalk.bold.red;
@@ -70,6 +69,7 @@ export class UserService {
         let user = await this.findUserById(userId);
         if (user) {
           user.token = "";
+
           user.password = password;
           user.save();
           return { status: "success", body: "password updated successfully" };
