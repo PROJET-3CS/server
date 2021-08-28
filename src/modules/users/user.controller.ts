@@ -33,6 +33,11 @@ export class UserController {
     return this.usersService.getUser(id);
   }
 
+  @Post("/update/:id")
+  async updateUser(@Param("id") id: number, @Body() body) {
+    return await this.usersService.updateUser(id, body);
+  }
+
   //get users with paginations
   @Get("/get_users/:pageNumber")
   async getUsers(@Param("pageNumber") pageNumber: number) {

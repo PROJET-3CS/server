@@ -150,6 +150,44 @@ export class UserService {
     }
   }
 
+  async updateUser(id: number, userUpdated) {
+    try {
+      let user = await this.findUserById(id);
+      if (!user)
+        return { status: "failed", body: "user doesen't exist successfuly" };
+      const {
+        firstname,
+        lastname,
+        email,
+        gender,
+        birthDay,
+        birthPlace,
+        speciality,
+        typePatient,
+        age,
+        promo,
+        groupe,
+      } = userUpdated;
+
+      user.firstname = firstname || user.firstname;
+      user.lastname = lastname || user.lastname;
+      user.email = email || user.email;
+      user.gender = gender || user.gender;
+      user.birthDay = birthDay || user.birthDay;
+      user.birthPlace = birthPlace || user.birthPlace;
+      user.speciality = speciality || user.speciality;
+      user.typePatient = typePatient || user.typePatient;
+      user.age = age || user.age;
+      user.promo = promo || user.promo;
+      user.groupe = groupe || user.groupe;
+
+      user.save();
+      return { status: "success", body: "user updated successfuly" };
+    } catch (err) {
+      console.log(error(err.message));
+    }
+  }
+
   // @ROUTE create user
   public async createUserWithConfirmationToken(newUser) {
     try {

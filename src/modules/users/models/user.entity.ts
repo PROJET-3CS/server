@@ -12,6 +12,7 @@ import {
 import { Appointment } from "src/modules/appointment/models/appointment.entity";
 import { Attendance } from "src/modules/appointment/models/attendance.etity";
 import { CollectifAppointment } from "src/modules/appointment/models/collectifAppointment.entity";
+import { TypePatient } from "src/shared/enums/typePatient.enum";
 import { Gender } from "../../../shared/enums/gender.enum";
 
 import { MedicalFolder } from "../../medical-folder/models/medical-folder.entity";
@@ -61,8 +62,8 @@ export class User extends Model {
   @Column
   speciality: String;
 
-  @Column
-  typePatient: String;
+  @Column({ type: DataType.ENUM(TypePatient.employee, TypePatient.student) })
+  typePatient: TypePatient;
 
   @Column({
     type: DataType.ENUM("pending", "archived", "actif"),
