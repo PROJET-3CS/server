@@ -69,44 +69,34 @@ export class MedicalFolder extends Model {
 
   //Personal History
   @Column
-  smoker: boolean;
+  fumeur: boolean;
 
-  @Column({ field: "nbr_cigarettes" })
-  nbrCigarettes: number;
+  @Column({ field: "nbr_fumeur" })
+  nbrFumeur: number;
 
   @Column
-  chewer: boolean;
+  chiquer: boolean;
+
+  @Column({ field: "nbr_chiquer" })
+  nbrChiquer: number;
 
   @Column
   alcoholic: boolean;
 
-  @Column({ field: "ex_smoker" })
-  exSmoker: boolean;
+  @Column
+  prise: boolean;
+
+  @Column({ field: "nbr_prise" })
+  nbrPrise: number;
+
+  @Column
+  exFumeur: boolean;
+
+  @Column({ field: "nbr_ex_fumeur" })
+  nbrExFumeur: number;
 
   @Column
   other: string;
-
-  //Surgical Medicinal History
-  // @Column({
-  //   field: "congenital_infections",
-  //   // type: DataType.ARRAY(DataType.STRING),
-  // })
-  // congenitalInfections: string;
-
-  // @Column({
-  //   field: "general_illnesses",
-  // })
-  // generalIllnesses: string;
-
-  // @Column({
-  //   field: "surgical_interventions",
-  // })
-  // surgicalInterventions: string;
-
-  // @Column({
-  //   field: "allergic_reactions",
-  // })
-  // allergicReactions: string;
 
   @HasMany(() => Medicament)
   medicaments: Medicament;

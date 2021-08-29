@@ -99,24 +99,32 @@ export class MedicalFolderService {
         tall = folder.tall,
         weight = folder.weight,
         blood = folder.blood,
-        imc = folder.imc,
-        smoker = folder.smoker,
-        nbrCigarettes = folder.nbrCigarettes,
-        chewer = folder.chewer,
+
+        fumeur = folder.fumeur,
+        nbrFumeur = folder.nbrFumeur,
+        chiquer = folder.chiquer,
+        nbrChiquer = folder.nbrChiquer,
+        prise = folder.prise,
+        nbrPrise = folder.nbrPrise,
         alcoholic = folder.alcoholic,
-        exSmoker = folder.exSmoker,
+        exFumeur = folder.exFumeur,
+        nbrExFumeur = folder.nbrExFumeur,
         other = folder.other,
       } = updatedFolder;
       folder.socialSecurityNumber = socialSecurityNumber;
-      folder.nbrCigarettes = nbrCigarettes;
       folder.tall = tall;
       folder.blood = blood;
       folder.weight = weight;
-      folder.imc = imc;
-      folder.smoker = smoker;
-      folder.chewer = chewer;
+
+      folder.fumeur = fumeur;
+      folder.nbrFumeur = nbrFumeur;
+      folder.chiquer = chiquer;
+      folder.nbrChiquer = nbrChiquer;
+      folder.prise = prise;
+      folder.nbrPrise = nbrPrise;
       folder.alcoholic = alcoholic;
-      folder.exSmoker = exSmoker;
+      folder.exFumeur = exFumeur;
+      folder.nbrExFumeur = nbrExFumeur;
       folder.other = other;
       folder.save();
       return { status: "success", message: folder };
