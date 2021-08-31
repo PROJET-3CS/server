@@ -10,9 +10,13 @@ import { User } from "src/modules/users/models/user.entity";
 
 @Table
 export class MedicalExam extends Model {
-  // @ForeignKey(() => User)
-  // @Column({ field: "patient_id", type: DataType.INTEGER })
-  // patientId: number;
+  @ForeignKey(() => User)
+  @Column({ field: "patient_id", type: DataType.INTEGER })
+  patientId: number;
+
+  @ForeignKey(() => User)
+  @Column({ field: "docotor_id", type: DataType.INTEGER })
+  doctorId: number;
 
   @Column
   pulsation: number;
@@ -72,6 +76,9 @@ export class MedicalExam extends Model {
   conclusion: string;
 
   // defining db relations
-  // @BelongsTo(() => User)
-  // patient: User;
+  @BelongsTo(() => User)
+  patient: User;
+
+  @BelongsTo(() => User)
+  doctor: User;
 }
