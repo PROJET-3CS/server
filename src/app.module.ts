@@ -3,10 +3,17 @@ import { UserModule } from "./modules/users/user.module";
 import { AuthModule } from "./modules/auth/auth.module";
 import { AuthMiddleware } from "./utils/middleware/auth.middleware";
 import { MedicalFolderModule } from "./modules/medical-folder/medical-folder.module";
-import { AppointmentModule } from './modules/appointment/appointment.module';
+import { AppointmentModule } from "./modules/appointment/appointment.module";
+import { MedicalExamModule } from "./modules/medical-exam/medical-exam.module";
 
 @Module({
-  imports: [UserModule, AuthModule, MedicalFolderModule, AppointmentModule],
+  imports: [
+    UserModule,
+    AuthModule,
+    MedicalFolderModule,
+    AppointmentModule,
+    MedicalExamModule,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
