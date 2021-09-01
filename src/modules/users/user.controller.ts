@@ -39,9 +39,11 @@ export class UserController {
   }
 
   //get users with paginations
-  @Get("/get_users/:pageNumber")
-  async getUsers(@Param("pageNumber") pageNumber: number) {
-    return await this.usersService.getUsers(pageNumber);
+  @Get("?")
+  async getUsers(@Query("page") page: number, @Query("items") items: number) {
+    console.log(items);
+
+    return await this.usersService.getUsers(page, items);
   }
 
   // create new user

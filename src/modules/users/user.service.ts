@@ -49,12 +49,12 @@ export class UserService {
     return user;
   }
 
-  public async get(pageNumber: number) {
+  public async get(pageNumber: number, items: number) {
     let users = await this.userRepository.findAndCountAll({
-      limit: 10,
-      offset: pageNumber * 10,
+      limit: Number(items),
+      offset: Number(pageNumber) * Number(items),
+      attributes: { exclude: ["password"] },
     });
-    console.log(warning(Promise.resolve(users.rows)));
 
     return users;
   }
@@ -131,16 +131,16 @@ export class UserService {
   }
 
   // @ROUTE Get all users using pagination
-  public async getUsers(pageNumber: number) {
+  public async getUsers(page: number, items: number) {
     try {
-      let users = await this.get(pageNumber);
+      let users = await this.get(page, items);
 
       return {
         status: "success",
         body: {
           count: users.count,
           users: users.rows,
-          currentPage: pageNumber,
+          currentPage: page,
           totalPages: Math.ceil(users.count / 10),
         },
       };
