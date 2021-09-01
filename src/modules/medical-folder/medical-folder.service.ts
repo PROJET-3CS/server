@@ -6,7 +6,7 @@ import { GeneralIllness } from "./models/general-illness.entity";
 import { AllergicReaction } from "./models/allergic-reaction.entity";
 import { SurgicalIntervention } from "./models/surgical-intervention.entity";
 import * as chalk from "chalk";
-// const chalk = require("chalk");
+
 const error = chalk.bold.red;
 const warning = chalk.keyword("orange");
 

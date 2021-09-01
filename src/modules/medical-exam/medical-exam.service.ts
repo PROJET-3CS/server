@@ -67,4 +67,52 @@ export class MedicalExamService {
       return { status: "failed", body: "an error occured , please try later" };
     }
   }
+
+  async edit(medicalExamId: number, medicalExamUpdated) {
+    try {
+      let medicalExam = await this.medicalExamRepository.findByPk(
+        medicalExamId
+      );
+      if (!medicalExamId)
+        return { status: "failed", body: "medical exam doesn't exist" };
+      const {
+        pulsation = medicalExam.pulsation,
+        tension = medicalExam.tension,
+        weight = medicalExam.weight,
+        painStart = medicalExam.painStart,
+        painPlace = medicalExam.painPlace,
+        painIntensity = medicalExam.painIntensity,
+        abdominalPerscussion = medicalExam.abdominalPerscussion,
+        abdominalParpation = medicalExam.abdominalParpation,
+        backs = medicalExam.backs,
+        legs = medicalExam.legs,
+        head = medicalExam.head,
+        eyes = medicalExam.eyes,
+        sicknessDetails = medicalExam.sicknessDetails,
+        observation = medicalExam.observation,
+        conclusion = medicalExam.conclusion,
+      } = medicalExamUpdated;
+
+      medicalExam.pulsation = pulsation;
+      medicalExam.tension = tension;
+      medicalExam.weight = weight;
+      medicalExam.painStart = painStart;
+      medicalExam.painPlace = painPlace;
+      medicalExam.painIntensity = painIntensity;
+      medicalExam.abdominalPerscussion = abdominalPerscussion;
+      medicalExam.abdominalParpation = abdominalParpation;
+      medicalExam.backs = backs;
+      medicalExam.legs = legs;
+      medicalExam.eyes = eyes;
+      medicalExam.head = head;
+      medicalExam.sicknessDetails = sicknessDetails;
+      medicalExam.observation = observation;
+      medicalExam.conclusion = conclusion;
+      await medicalExam.save();
+      return { status: "succes", body: "medical exam updated successfuly" };
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: "failed", body: "an error occured , please try later" };
+    }
+  }
 }
