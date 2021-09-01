@@ -6,13 +6,22 @@ import {
   Model,
   Table,
 } from "sequelize-typescript";
+import { MedicalFolder } from "src/modules/medical-folder/models/medical-folder.entity";
 import { User } from "src/modules/users/models/user.entity";
 
 @Table
 export class MedicalExam extends Model {
-  @ForeignKey(() => User)
-  @Column({ field: "patient_id", type: DataType.INTEGER })
-  patientId: number;
+  @Column({
+    allowNull: false,
+    autoIncrement: true,
+    unique: true,
+    primaryKey: true,
+  })
+  public id: number;
+
+  @ForeignKey(() => MedicalFolder)
+  @Column({ field: "medical_folder_id", type: DataType.INTEGER })
+  medicalFolderId: number;
 
   @ForeignKey(() => User)
   @Column({ field: "docotor_id", type: DataType.INTEGER })
@@ -76,8 +85,8 @@ export class MedicalExam extends Model {
   conclusion: string;
 
   // defining db relations
-  @BelongsTo(() => User)
-  patient: User;
+  @BelongsTo(() => MedicalFolder)
+  medicalFolder: MedicalFolder;
 
   @BelongsTo(() => User)
   doctor: User;

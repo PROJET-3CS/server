@@ -30,7 +30,7 @@ export const databaseProvider = {
       Attendance,
       MedicalExam,
     ]);
-    await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
     return sequelize;
   },
 };

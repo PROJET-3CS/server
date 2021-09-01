@@ -16,6 +16,7 @@ import { Medicament } from "./medicament.entity";
 import { GeneralIllness } from "./general-illness.entity";
 import { SurgicalIntervention } from "./surgical-intervention.entity";
 import { AllergicReaction } from "./allergic-reaction.entity";
+import { MedicalExam } from "src/modules/medical-exam/models/medical-exam.entity";
 
 @Table
 export class MedicalFolder extends Model {
@@ -113,6 +114,9 @@ export class MedicalFolder extends Model {
   //Association with user table __ OneToOne Relation __
   @BelongsTo(() => User)
   user: User;
+
+  @HasMany(() => MedicalExam)
+  medicalExams: MedicalExam[];
 }
 
 AfterCreate;

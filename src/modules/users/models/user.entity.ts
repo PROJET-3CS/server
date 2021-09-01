@@ -94,10 +94,7 @@ export class User extends Model {
   @HasMany(() => Appointment)
   appointment: Appointment[];
 
-  @HasMany(() => MedicalExam, "patientId")
-  patientMedicalExams: MedicalExam[];
-
-  @HasMany(() => MedicalExam, "doctorId")
+  @HasMany(() => MedicalExam)
   DoctorMedicalExams: MedicalExam[];
 
   @BelongsToMany(() => CollectifAppointment, {

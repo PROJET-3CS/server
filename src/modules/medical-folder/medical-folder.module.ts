@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 import { DatabaseModule } from "../database/database.module";
+import { MedicalExamService } from "../medical-exam/medical-exam.service";
 import { MedicalFolderController } from "./medical-folder.controller";
 import {
   medicalFolderProvider,
@@ -22,6 +23,6 @@ import { MedicalFolderService } from "./medical-folder.service";
     allergicReactionProvider,
     surgicalInterventionProvider,
   ],
-  exports: [MedicalFolderModule],
+  exports: [MedicalFolderModule, MedicalFolderService],
 })
 export class MedicalFolderModule {}
