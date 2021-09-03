@@ -456,4 +456,28 @@ export class UserService {
       return { status: "failed", body: "bad params" };
     }
   }
+
+  public async archive(id: number) {
+    try {
+      let user = await this.findUserById(id);
+      if (!user) return { status: "failed", body: "this account doesnt exist" };
+      if (user.status === "pendind")
+        return {
+          status: "failed",
+          body: "this account is on pendind situation",
+        };
+      if (user.status === "archived")
+        return {
+          status: "failed",
+          body: "this account was already archived before ",
+        };
+      user.status = "archived";
+      await user.save();
+
+      return { status: "success", body: "account archived successfuly" };
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: "failed", body: "An error occured , try later" };
+    }
+  }
 }

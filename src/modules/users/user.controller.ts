@@ -33,6 +33,10 @@ export class UserController {
     return this.usersService.getUser(id);
   }
 
+  @Get("/archive/:id")
+  async archiveUser(@Param("id") id: number) {
+    return this.usersService.archive(id);
+  }
   @Post("/update/:id")
   async updateUser(@Param("id") id: number, @Body() body) {
     return await this.usersService.updateUser(id, body);
