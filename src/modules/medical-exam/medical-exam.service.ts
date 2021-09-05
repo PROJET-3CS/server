@@ -12,8 +12,6 @@ export class MedicalExamService {
   constructor(
     @Inject("MedicalExamRepository")
     private readonly medicalExamRepository: typeof MedicalExam,
-    @Inject("UserRepository")
-    private readonly userRepository: typeof User,
     private readonly medicalFolderService: MedicalFolderService
   ) {}
 
@@ -110,6 +108,32 @@ export class MedicalExamService {
       medicalExam.conclusion = conclusion;
       await medicalExam.save();
       return { status: "succes", body: "medical exam updated successfuly" };
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: "failed", body: "an error occured , please try later" };
+    }
+  }
+
+  async createRescription(rescription, userId: number) {
+    try {
+      const medicalFolder =
+        await this.medicalFolderService.getMedicalFolderByUserId(userId);
+      if (!medicalFolder)
+        return { status: "failed", body: "medical folder doesn't exist" };
+      const { doctorId, medicalExamId, medicaments } = rescription;
+      let createdRescription = {
+        medicalExamId,
+        doctorId,
+        medicaments,
+      };
+
+      await medicalFolder.$create("rescription", createdRescription);
+      let rescriptions = await medicalFolder.$get("rescriptions");
+
+      return {
+        status: "success",
+        body: "rescription created successfully",
+      };
     } catch (err) {
       console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };

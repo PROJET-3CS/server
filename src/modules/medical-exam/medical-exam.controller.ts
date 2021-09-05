@@ -20,4 +20,10 @@ export class MedicalExamController {
   async deleteMedicalExam(@Param("medicalExamId") medicalExamId: number) {
     return this.medicalExamService.delete(medicalExamId);
   }
+
+  // rescrition routs
+  @Post("/rescritpions/:userId")
+  async create(@Param("userId") userId: number, @Body() body) {
+    return this.medicalExamService.createRescription(body, userId);
+  }
 }

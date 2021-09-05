@@ -119,7 +119,7 @@ export class MedicalFolder extends Model {
   @HasMany(() => MedicalExam)
   medicalExams: MedicalExam[];
 
-  @HasMany(() => Rescription)
+  @HasMany(() => Rescription, "medical_folder_id")
   rescriptions: Rescription[];
 }
 
