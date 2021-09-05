@@ -8,11 +8,13 @@ import {
   HasOne,
   HasMany,
   BelongsToMany,
+  BeforeCreate,
 } from "sequelize-typescript";
 import { Appointment } from "src/modules/appointment/models/appointment.entity";
 import { Attendance } from "src/modules/appointment/models/attendance.etity";
 import { CollectifAppointment } from "src/modules/appointment/models/collectifAppointment.entity";
 import { MedicalExam } from "src/modules/medical-exam/models/medical-exam.entity";
+import { Rescription } from "src/modules/medical-exam/models/rescription.entity";
 import { TypePatient } from "src/shared/enums/typePatient.enum";
 import { Gender } from "../../../shared/enums/gender.enum";
 
@@ -87,6 +89,13 @@ export class User extends Model {
   @Column
   token: String;
 
+  // defining the model hooks
+  @BeforeCreate
+  static makeUpperCase(instance: User) {
+    // this will be called when an instance is created or updated
+    instance.email = instance.email.toLocaleLowerCase();
+  }
+
   // Association with medical folder table __ OneToOne Relation __
   @HasOne(() => MedicalFolder)
   medicalFolder: MedicalFolder;
@@ -96,6 +105,9 @@ export class User extends Model {
 
   @HasMany(() => MedicalExam)
   DoctorMedicalExams: MedicalExam[];
+
+  @HasMany(() => Rescription)
+  rescriptions: Rescription[];
 
   @BelongsToMany(() => CollectifAppointment, {
     foreignKey: "id",

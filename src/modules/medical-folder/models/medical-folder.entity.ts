@@ -17,6 +17,7 @@ import { GeneralIllness } from "./general-illness.entity";
 import { SurgicalIntervention } from "./surgical-intervention.entity";
 import { AllergicReaction } from "./allergic-reaction.entity";
 import { MedicalExam } from "src/modules/medical-exam/models/medical-exam.entity";
+import { Rescription } from "src/modules/medical-exam/models/rescription.entity";
 
 @Table
 export class MedicalFolder extends Model {
@@ -117,6 +118,9 @@ export class MedicalFolder extends Model {
 
   @HasMany(() => MedicalExam)
   medicalExams: MedicalExam[];
+
+  @HasMany(() => Rescription)
+  rescriptions: Rescription[];
 }
 
 AfterCreate;
