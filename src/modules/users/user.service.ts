@@ -395,8 +395,8 @@ export class UserService {
       return {
         status: "success",
         body: {
-          count,
-          requests,
+          count: requests.count,
+          requests: requests.rows,
           currentPage: pageNumber,
           totalPages: Math.ceil(count / 10),
         },
