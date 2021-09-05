@@ -93,6 +93,6 @@ export class MedicalExam extends Model {
   @BelongsTo(() => User)
   doctor: User;
 
-  @HasMany(() => Rescription)
+  @HasMany(() => Rescription, "medicalExamId")
   rescriptions: Rescription[];
 }

@@ -121,6 +121,14 @@ export class MedicalExamService {
       if (!medicalFolder)
         return { status: "failed", body: "medical folder doesn't exist" };
       const { doctorId, medicalExamId, medicaments } = rescription;
+
+      if (medicalExamId) {
+        let medicalExam = await this.medicalExamRepository.findByPk(
+          medicalExamId
+        );
+        if (!medicalExam)
+          return { status: "failed", body: "medical exam doesn't exist" };
+      }
       let createdRescription = {
         medicalExamId,
         doctorId,
@@ -128,7 +136,6 @@ export class MedicalExamService {
       };
 
       await medicalFolder.$create("rescription", createdRescription);
-      let rescriptions = await medicalFolder.$get("rescriptions");
 
       return {
         status: "success",

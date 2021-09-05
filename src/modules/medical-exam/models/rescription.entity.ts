@@ -72,7 +72,7 @@ export class Rescription extends Model {
   @BelongsTo(() => MedicalFolder)
   medicalFolder: MedicalFolder;
 
-  @BelongsTo(() => MedicalExam)
+  @BelongsTo(() => MedicalExam, "medicalExamId")
   medicalExam: MedicalExam;
 
   @BelongsTo(() => User)
