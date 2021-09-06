@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+} from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { MedicalExamService } from "./medical-exam.service";
 
@@ -6,6 +14,7 @@ import { MedicalExamService } from "./medical-exam.service";
 @Controller("medical_exam")
 export class MedicalExamController {
   constructor(private readonly medicalExamService: MedicalExamService) {}
+
   @Post("/:userId")
   async cretaeMedicalExam(@Param("userId") userId: number, @Body() body) {
     return await this.medicalExamService.create(userId, body);
@@ -21,9 +30,31 @@ export class MedicalExamController {
     return this.medicalExamService.delete(medicalExamId);
   }
 
-  // rescrition routs
+  // rescrition routes
   @Post("/rescritpions/:userId")
   async create(@Param("userId") userId: number, @Body() body) {
     return this.medicalExamService.createRescription(body, userId);
+  }
+
+  @Get("/rescritpions")
+  async getRescriptions(
+    @Query("medicalFolderId") medicalFolderId: number,
+    @Query("medicalExamId") medicalExamId: number,
+    @Query("doctorId") doctorId: number,
+    @Query("page") page: number,
+    @Query("items") items: number
+  ) {
+    let queries = {};
+
+    if (typeof medicalExamId !== "undefined") {
+      queries["medicalExamId"] = Number(medicalExamId);
+    }
+    if (typeof medicalFolderId !== "undefined") {
+      queries["medicalFolderId"] = Number(medicalFolderId);
+    }
+    if (typeof doctorId !== "undefined") {
+      queries["doctorId"] = Number(doctorId);
+    }
+    return this.medicalExamService.getRescriptions(queries, page, items);
   }
 }

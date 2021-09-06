@@ -10,7 +10,10 @@ import {
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { usersProvider } from "../users/user.provider";
 import { MedicalExamController } from "./medical-exam.controller";
-import { medicalExamProvider } from "./medical-exam.provder";
+import {
+  medicalExamProvider,
+  rescriptionProvider,
+} from "./medical-exam.provder";
 import { MedicalExamService } from "./medical-exam.service";
 
 @Module({
@@ -26,6 +29,7 @@ import { MedicalExamService } from "./medical-exam.service";
     generalIllnessProvider,
     allergicReactionProvider,
     surgicalInterventionProvider,
+    rescriptionProvider,
   ],
   exports: [MedicalExamModule],
 })

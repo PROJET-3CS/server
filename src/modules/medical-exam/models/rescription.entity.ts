@@ -1,11 +1,6 @@
 import {
-  AfterBulkRestore,
   AfterFind,
-  BeforeBulkRestore,
   BeforeCreate,
-  BeforeFind,
-  BeforeRestore,
-  BeforeSync,
   BeforeUpdate,
   BelongsTo,
   Column,
@@ -52,19 +47,18 @@ export class Rescription extends Model {
     console.log(instance.medicaments);
 
     instance.medicaments = JSON.stringify(instance.medicaments);
-    console.log(instance.medicaments);
   }
 
   @AfterFind
-  static convertMedicamentsToJson(instances: Rescription[]) {
+  static async convertMedicamentsToJson(instances: Rescription[]) {
     // this will be called when an instance(s) is(are) fetched
     // it will parse all the medicaments objects on all the instances
+    let convertedInstances: Rescription[] = [];
     instances = JSON.parse(JSON.stringify(instances));
-    instances.forEach((instance, index) => {
-      instances[index].medicaments = JSON.parse(
+    instances.forEach(async (instance, index) => {
+      instances[index].medicaments = await JSON.parse(
         JSON.parse(instance.medicaments)
       );
-      //   console.log(instances[index].medicaments);
     });
   }
 

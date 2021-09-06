@@ -3,6 +3,7 @@ import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { User } from "../users/models/user.entity";
 import { MedicalExam } from "./models/medical-exam.entity";
 import * as chalk from "chalk";
+import { Rescription } from "./models/rescription.entity";
 
 const error = chalk.bold.red;
 const warning = chalk.keyword("orange");
@@ -12,6 +13,8 @@ export class MedicalExamService {
   constructor(
     @Inject("MedicalExamRepository")
     private readonly medicalExamRepository: typeof MedicalExam,
+    @Inject("RescriptionRepository")
+    private readonly rescriptionRepository: typeof Rescription,
     private readonly medicalFolderService: MedicalFolderService
   ) {}
 
@@ -145,5 +148,31 @@ export class MedicalExamService {
       console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
+  }
+
+  async getRescriptions(queries, page: number, items: number) {
+    const results = await this.rescriptionRepository.findAndCountAll({
+      where: { ...queries },
+      limit: Number(items),
+      offset: Number(page) * Number(page),
+    });
+
+    const { rows } = results;
+    let rescriptions: Rescription[] = [];
+    rows.map((row) => {
+      row = JSON.parse(JSON.stringify(row));
+      row.medicaments = JSON.parse(JSON.parse(row.medicaments));
+      rescriptions.push(row);
+    });
+
+    return {
+      status: "success",
+      body: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(results.count / Number(items)),
+        count: results.count,
+        rescriptions,
+      },
+    };
   }
 }
