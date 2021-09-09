@@ -44,7 +44,7 @@ export class MedicalExamDocument extends Model {
   })
   type: string;
 
-  @Column
+  @Column({ type: DataType.TEXT })
   content: string;
 
   // defining db relations

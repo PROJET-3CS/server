@@ -11,6 +11,7 @@ import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { usersProvider } from "../users/user.provider";
 import { MedicalExamController } from "./medical-exam.controller";
 import {
+  medicalExamDocumentProvider,
   medicalExamProvider,
   rescriptionProvider,
 } from "./medical-exam.provder";
@@ -30,6 +31,7 @@ import { MedicalExamService } from "./medical-exam.service";
     allergicReactionProvider,
     surgicalInterventionProvider,
     rescriptionProvider,
+    medicalExamDocumentProvider,
   ],
   exports: [MedicalExamModule],
 })
