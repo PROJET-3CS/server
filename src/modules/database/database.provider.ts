@@ -12,6 +12,8 @@ import { Appointment } from "src/modules/appointment/models/appointment.entity";
 import { CollectifAppointment } from "../appointment/models/collectifAppointment.entity";
 import { Attendance } from "../appointment/models/attendance.etity";
 import { MedicalExam } from "../medical-exam/models/medical-exam.entity";
+import { Rescription } from "../medical-exam/models/rescription.entity";
+import { MedicalExamDocument } from "../medical-exam/models/document.entity";
 
 export const databaseProvider = {
   provide: "SequelizeInstance",
@@ -29,6 +31,8 @@ export const databaseProvider = {
       CollectifAppointment,
       Attendance,
       MedicalExam,
+      Rescription,
+      MedicalExamDocument,
     ]);
     // await sequelize.sync({ force: true });
     return sequelize;

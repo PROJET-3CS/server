@@ -3,6 +3,8 @@ import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { User } from "../users/models/user.entity";
 import { MedicalExam } from "./models/medical-exam.entity";
 import * as chalk from "chalk";
+import { Rescription } from "./models/rescription.entity";
+import { MedicalExamDocument } from "./models/document.entity";
 
 const error = chalk.bold.red;
 const warning = chalk.keyword("orange");
@@ -12,8 +14,10 @@ export class MedicalExamService {
   constructor(
     @Inject("MedicalExamRepository")
     private readonly medicalExamRepository: typeof MedicalExam,
-    @Inject("UserRepository")
-    private readonly userRepository: typeof User,
+    @Inject("RescriptionRepository")
+    private readonly rescriptionRepository: typeof Rescription,
+    @Inject("MedicalExamDocumentRepository")
+    private readonly medicalExamDocumentRepository: typeof MedicalExamDocument,
     private readonly medicalFolderService: MedicalFolderService
   ) {}
 
@@ -114,5 +118,116 @@ export class MedicalExamService {
       console.log(error(err.message));
       return { status: "failed", body: "an error occured , please try later" };
     }
+  }
+
+  async createRescription(rescription, userId: number) {
+    try {
+      const medicalFolder =
+        await this.medicalFolderService.getMedicalFolderByUserId(userId);
+      if (!medicalFolder)
+        return { status: "failed", body: "medical folder doesn't exist" };
+      const { doctorId, medicalExamId, medicaments } = rescription;
+
+      if (medicalExamId) {
+        let medicalExam = await this.medicalExamRepository.findByPk(
+          medicalExamId
+        );
+        if (!medicalExam)
+          return { status: "failed", body: "medical exam doesn't exist" };
+      }
+      let createdRescription = {
+        medicalExamId,
+        doctorId,
+        medicaments,
+      };
+
+      await medicalFolder.$create("rescription", createdRescription);
+
+      return {
+        status: "success",
+        body: "rescription created successfully",
+      };
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: "failed", body: "an error occured , please try later" };
+    }
+  }
+
+  async getRescriptions(queries, page: number, items: number) {
+    const results = await this.rescriptionRepository.findAndCountAll({
+      where: { ...queries },
+      limit: Number(items),
+      offset: Number(page) * Number(page),
+    });
+
+    const { rows } = results;
+    let rescriptions: Rescription[] = [];
+    rows.map((row) => {
+      row = JSON.parse(JSON.stringify(row));
+      row.medicaments = JSON.parse(JSON.parse(row.medicaments));
+      rescriptions.push(row);
+    });
+
+    return {
+      status: "success",
+      body: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(results.count / Number(items)),
+        count: results.count,
+        rescriptions,
+      },
+    };
+  }
+
+  async createDocument(document, userId: number) {
+    try {
+      const medicalFolder =
+        await this.medicalFolderService.getMedicalFolderByUserId(userId);
+      if (!medicalFolder)
+        return { status: "failed", body: "medical folder doesn't exist" };
+      const { doctorId, medicalExamId, type, content } = document;
+
+      if (medicalExamId) {
+        let medicalExam = await this.medicalExamRepository.findByPk(
+          medicalExamId
+        );
+        if (!medicalExam)
+          return { status: "failed", body: "medical exam doesn't exist" };
+      }
+      let createdRescription = {
+        medicalExamId,
+        doctorId,
+        type,
+        content,
+      };
+
+      await medicalFolder.$create("document", createdRescription);
+
+      return {
+        status: "success",
+        body: "document created successfully",
+      };
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: "failed", body: "an error occured , please try later" };
+    }
+  }
+
+  async getDocuments(queries, page: number, items: number) {
+    const results = await this.medicalExamRepository.findAndCountAll({
+      where: { ...queries },
+      limit: Number(items),
+      offset: Number(page) * Number(page),
+    });
+
+    return {
+      status: "success",
+      body: {
+        currentPage: Number(page),
+        totalPages: Math.ceil(results.count / Number(items)),
+        count: results.count,
+        documents: results.rows,
+      },
+    };
   }
 }

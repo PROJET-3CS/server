@@ -3,11 +3,14 @@ import {
   Column,
   DataType,
   ForeignKey,
+  HasMany,
   Model,
   Table,
 } from "sequelize-typescript";
 import { MedicalFolder } from "src/modules/medical-folder/models/medical-folder.entity";
 import { User } from "src/modules/users/models/user.entity";
+import { MedicalExamDocument } from "./document.entity";
+import { Rescription } from "./rescription.entity";
 
 @Table
 export class MedicalExam extends Model {
@@ -90,4 +93,10 @@ export class MedicalExam extends Model {
 
   @BelongsTo(() => User)
   doctor: User;
+
+  @HasMany(() => Rescription, "medicalExamId")
+  rescriptions: Rescription[];
+
+  @HasMany(() => MedicalExamDocument, "medicalExamId")
+  documents: MedicalExamDocument[];
 }
