@@ -119,6 +119,6 @@ export class User extends Model {
   })
   collappointments: CollectifAppointment[];
 
-  @BelongsToMany(() => Conversation, () => UserMessages)
+  @HasMany(() => Conversation)
   conversations: Conversation[];
 }

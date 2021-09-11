@@ -22,7 +22,7 @@ export class Message extends Model {
   @Column({ field: "conversation_id", type: DataType.NUMBER })
   conversationId: number;
 
-  @Column({ type: DataType.NUMBER })
+  @Column
   senderId: number;
 
   @Column

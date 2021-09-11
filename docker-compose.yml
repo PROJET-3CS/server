@@ -4,16 +4,16 @@ services:
     build: .
     ports:
       - 5000:5000
-      
+
   mysqldb:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: clinity
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ehealth
     ports:
-      - 4030:3306
+      - 4030:3036
 
     # volumes:
     #   - db-config:/etc/mysql

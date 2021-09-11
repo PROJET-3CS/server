@@ -37,10 +37,10 @@ export const databaseProvider = {
       Rescription,
       MedicalExamDocument,
       Conversation,
-      UserMessages,
       Message,
+      UserMessages,
     ]);
-    await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
     return sequelize;
   },
 };
