@@ -15,7 +15,7 @@ import { MedicalExam } from "../medical-exam/models/medical-exam.entity";
 import { Rescription } from "../medical-exam/models/rescription.entity";
 import { MedicalExamDocument } from "../medical-exam/models/document.entity";
 import { Conversation } from "../chat/models/conversation.entity";
-import { UserMessages } from "../chat/models/user-messages.entity";
+
 import { Message } from "../chat/models/message.entity";
 
 export const databaseProvider = {
