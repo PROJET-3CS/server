@@ -38,7 +38,6 @@ export const databaseProvider = {
       MedicalExamDocument,
       Conversation,
       Message,
-      UserMessages,
     ]);
     // await sequelize.sync({ force: true });
     return sequelize;
