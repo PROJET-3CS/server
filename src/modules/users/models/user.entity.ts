@@ -14,7 +14,6 @@ import { Appointment } from "src/modules/appointment/models/appointment.entity";
 import { Attendance } from "src/modules/appointment/models/attendance.etity";
 import { CollectifAppointment } from "src/modules/appointment/models/collectifAppointment.entity";
 import { Conversation } from "src/modules/chat/models/conversation.entity";
-import { UserMessages } from "src/modules/chat/models/user-messages.entity";
 import { MedicalExam } from "src/modules/medical-exam/models/medical-exam.entity";
 import { Rescription } from "src/modules/medical-exam/models/rescription.entity";
 import { TypePatient } from "src/shared/enums/typePatient.enum";
