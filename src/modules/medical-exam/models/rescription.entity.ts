@@ -44,7 +44,6 @@ export class Rescription extends Model {
   @BeforeCreate
   static convertMedicamentsToString(instance: Rescription) {
     // this will be called when an instance is created or updated
-    console.log(instance.medicaments);
 
     instance.medicaments = JSON.stringify(instance.medicaments);
   }
