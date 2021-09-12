@@ -5,6 +5,7 @@ import { AuthMiddleware } from "./utils/middleware/auth.middleware";
 import { MedicalFolderModule } from "./modules/medical-folder/medical-folder.module";
 import { AppointmentModule } from "./modules/appointment/appointment.module";
 import { MedicalExamModule } from "./modules/medical-exam/medical-exam.module";
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { MedicalExamModule } from "./modules/medical-exam/medical-exam.module";
     MedicalFolderModule,
     AppointmentModule,
     MedicalExamModule,
+    ChatModule,
   ],
 })
 export class AppModule {
