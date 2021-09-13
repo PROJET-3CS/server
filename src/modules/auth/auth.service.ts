@@ -1,6 +1,8 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { User } from "../users/models/user.entity";
 import * as jwt from "jsonwebtoken";
+import * as bcrypt from "bcrypt";
+
 const { Op } = require("sequelize");
 const chalk = require('chalk');
 const error = chalk.bold.red;
@@ -26,8 +28,11 @@ export class AuthService {
   public async login(loginObject: any): Promise<object> {
     try {
       //safeCoding ES6 take only email,pwd
-      const { email, password } = loginObject;
+      const { email, password, deviceToken} = loginObject;
 
+      // const hashedPwd = await bcrypt.hash(password, 10);
+
+      
       const user = await this.userRepository.findOne({
         where: {
           [Op.and]: [{ email: email }, { password: password }],
@@ -38,6 +43,7 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException();
       } else {
+
         //payload JWT
         const payload = {
           id: user.id,
@@ -51,6 +57,9 @@ export class AuthService {
           this._options
         );
 
+        user.deviceToken = deviceToken;
+        user.save();
+        
         user.password = undefined;
 
         return {
@@ -77,14 +86,17 @@ export class AuthService {
       let user;
       if (isValid) {
         const decoded: any = jwt.decode(token);
+        const hashedPwd = await bcrypt.hash(decoded.password, 10);
+
         user = await this.userRepository.findOne({
           where: {
             [Op.and]: [
               { email: decoded.email },
-              { password: decoded.password },
+              { password: decoded.password},
             ],
           },
         });
+        
       }
 
       return {

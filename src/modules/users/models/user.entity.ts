@@ -89,6 +89,9 @@ export class User extends Model {
   @Column
   token: String;
 
+  @Column
+  deviceToken: String;
+
   // defining the model hooks
   @BeforeCreate
   static makeUpperCase(instance: User) {

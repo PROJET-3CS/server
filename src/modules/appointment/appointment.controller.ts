@@ -30,14 +30,14 @@ export class appointmentController {
 
   @Post("ask_for_appointment")
   @ApiCreatedResponse({ description: "ask for appointment as Patient" })
-  async AppointmentRequest(
+  async appointmentRequest(
     @Body("patientId") patientId: number,
     @Body("description") description: string,
     @Body("date") date: Date,
     @Body("start_time") start_time: Date,
     @Body("end_time") end_time: Date
   ) {
-    return this.appointmentService.AppointmentRequest({
+    return this.appointmentService.appointmentRequest({
       patientId,
       description,
       date,
@@ -51,7 +51,7 @@ export class appointmentController {
     description:
       "accept appointment, required :appointmentId, doctorId, date, start_time, end_time",
   })
-  async AcceptAppointmentRequest(
+  async acceptAppointmentRequest(
     @Param("appointmentId") appointmentId: number,
     @Body("doctorId") doctorId: number,
     @Body("description") description: string,
@@ -59,7 +59,7 @@ export class appointmentController {
     @Body("start_time") start_time: Date,
     @Body("end_time") end_time: Date
   ) {
-    return this.appointmentService.AcceptAppointmentRequest({
+    return this.appointmentService.acceptAppointmentRequest({
       appointmentId,
       doctorId,
       description,
@@ -133,7 +133,7 @@ export class appointmentController {
     @Body("end_time") end_time: Date
   ) {
     if (appointment_type === "0") {
-      return this.appointmentService.EditAppointment({
+      return this.appointmentService.editAppointment({
         AppointmentId,
         status,
         date,
@@ -144,7 +144,7 @@ export class appointmentController {
     } else if (appointment_type === "1") {
       console.log("coll");
 
-      return this.appointmentService.EditCollAppointment({
+      return this.appointmentService.editCollAppointment({
         AppointmentId,
         status,
         date,
@@ -161,15 +161,15 @@ export class appointmentController {
 
   @Delete("cancel_appointment/:appointment_type/:AppointmentId")
   @ApiCreatedResponse({ description: "Cancel or Delete an Appointment" })
-  async CancelAppointment(
+  async cancelAppointment(
     @Param("AppointmentId") AppointmentId: number,
     @Param("appointment_type") appointment_type: string
     ) {
       if (appointment_type === "0") {
-        return this.appointmentService.CancelAppointment(AppointmentId);
+        return this.appointmentService.cancelAppointment(AppointmentId);
       }
       else if (appointment_type === "1"){
-        return this.appointmentService.CancelCollAppointment(AppointmentId);
+        return this.appointmentService.cancelCollAppointment(AppointmentId);
       }
       else{
         return {
@@ -183,14 +183,14 @@ export class appointmentController {
   @ApiCreatedResponse({
     description: "Archive Appointment after patient pass it",
   })
-  async ArchiveAppointment(
+  async archiveAppointment(
     @Param("AppointmentId") AppointmentId: number,
     @Param("appointment_type") appointment_type: string
   ) {
     if (appointment_type === "0") {
-      return this.appointmentService.ArchiveAppointment(AppointmentId);
+      return this.appointmentService.archiveAppointment(AppointmentId);
     } else if (appointment_type === "1") {
-      return this.appointmentService.ArchiveCollAppointment(AppointmentId);
+      return this.appointmentService.archiveCollAppointment(AppointmentId);
     }
     else{
       return {

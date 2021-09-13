@@ -2,9 +2,9 @@ import { Inject, Injectable } from "@nestjs/common";
 import { MedicalFolderService } from "../medical-folder/medical-folder.service";
 import { User } from "../users/models/user.entity";
 import { MedicalExam } from "./models/medical-exam.entity";
-import * as chalk from "chalk";
 import { Rescription } from "./models/rescription.entity";
 
+const chalk = require('chalk');
 const error = chalk.bold.red;
 const warning = chalk.keyword("orange");
 
