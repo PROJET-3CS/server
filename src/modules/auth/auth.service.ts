@@ -59,7 +59,7 @@ export class AuthService {
 
         user.deviceToken = deviceToken;
         user.save();
-        
+
         user.password = undefined;
 
         return {
@@ -92,7 +92,7 @@ export class AuthService {
           where: {
             [Op.and]: [
               { email: decoded.email },
-              { password: decoded.password},
+              { password: hashedPwd},
             ],
           },
         });
