@@ -335,8 +335,8 @@ export class AppointmentService {
           }
 
           this.sendNotif(
-            "Accept Appointment",
-            `Your Appointment is Accepted Date : ${Appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+            "Demand Appointment",
+            `Your invited to an Appointment Date : ${Appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
             user.deviceToken
           );
           //send mail
@@ -434,8 +434,8 @@ export class AppointmentService {
               await this.creatAttendance(collAppointment.id, patient.id);
 
               this.sendNotif(
-                "Accept Appointment",
-                `Your Appointment is Accepted Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+                "Collectif Appointment",
+                `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
                 patient.deviceToken
               );
 
@@ -474,8 +474,8 @@ export class AppointmentService {
                 await this.creatAttendance(collAppointment.id, user.id);
 
                 this.sendNotif(
-                  "Accept Appointment",
-                  `Your Appointment is Accepted Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+                  "Collectif Appointment",
+                  `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
                   user.deviceToken
                 );
 
@@ -545,8 +545,8 @@ export class AppointmentService {
         appointment.save();
 
       this.sendNotif(
-        "Accept Appointment",
-        `Your Appointment is Accepted Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+        "Change Appointment",
+        `Your Appointment is Edited Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time ${description}`,
         patient.deviceToken
       );
 
@@ -603,8 +603,8 @@ export class AppointmentService {
 
       for (const patient of appointment["Attend"]) {
         this.sendNotif(
-          "Accept Appointment",
-          `Your Appointment is Accepted Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+          "Change Appointment",
+          `Your Appointment is Changed Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
           patient.deviceToken
         );
 
