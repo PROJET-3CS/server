@@ -133,7 +133,7 @@ export class UserService {
   // @ROUTE Get all users using pagination
   public async getUsers(page: number, items: number) {
     try {
-      let users = await this.get(page, items);
+      let users = await this.get(Number(page), Number(items));
 
       return {
         status: "success",
@@ -141,7 +141,7 @@ export class UserService {
           count: users.count,
           users: users.rows,
           currentPage: page,
-          totalPages: Math.ceil(users.count / 10),
+          totalPages: Math.ceil(Number(users.count) / items),
         },
       };
     } catch (err) {
@@ -162,6 +162,7 @@ export class UserService {
         gender,
         birthDay,
         birthPlace,
+        address,
         speciality,
         typePatient,
         age,
@@ -175,6 +176,7 @@ export class UserService {
       user.gender = gender || user.gender;
       user.birthDay = birthDay || user.birthDay;
       user.birthPlace = birthPlace || user.birthPlace;
+      user.address = address || user.address;
       user.speciality = speciality || user.speciality;
       user.typePatient = typePatient || user.typePatient;
       user.age = age || user.age;
@@ -182,7 +184,7 @@ export class UserService {
       user.groupe = groupe || user.groupe;
 
       user.save();
-      return { status: "success", body: "user updated successfuly" };
+      return { status: "success", body: user };
     } catch (err) {
       console.log(error(err.message));
     }

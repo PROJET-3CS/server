@@ -31,31 +31,34 @@ export class MedicalExam extends Model {
   doctorId: number;
 
   @Column
+  reason: string;
+
+  @Column
+  startedAt: Date;
+
+  @Column
+  painPlace: string;
+
+  @Column
+  intensity: number;
+
+  @Column({ field: "interrogation_note" })
+  interrogationNote: string;
+
+  @Column
+  fever: number;
+
+  @Column
   pulsation: number;
 
   @Column
-  tension: number;
+  pressure: number;
 
   @Column
   weight: number;
 
   @Column
-  painStart: number;
-
-  @Column
-  painPlace: string;
-
-  @Column({ field: "pain_intensity" })
-  painIntensity: string;
-
-  @Column
-  analgesicPosition: string;
-
-  @Column
-  irradiation: string;
-
-  @Column({ field: "sickness_details" })
-  sicknessDetails: string;
+  state: string;
 
   @Column
   inspection: string;
@@ -63,29 +66,20 @@ export class MedicalExam extends Model {
   @Column
   auscultation: string;
 
-  @Column({ field: "abdominal_percussion" })
-  abdominalPerscussion: number;
-
-  @Column({ field: "abdominal_parpation" })
-  abdominalParpation: number;
+  @Column
+  percussion: string;
 
   @Column
-  backs: number;
+  palpation: string;
 
-  @Column
-  legs: number;
-
-  @Column
-  head: number;
-
-  @Column
-  eyes: number;
-
-  @Column
-  observation: string;
+  @Column({ field: "diagnostic_note" })
+  diagnosticNote: string;
 
   @Column
   conclusion: string;
+
+  @Column
+  filePath: string;
 
   // defining db relations
   @BelongsTo(() => MedicalFolder)

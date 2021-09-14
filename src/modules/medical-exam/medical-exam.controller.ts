@@ -33,6 +33,7 @@ export class MedicalExamController {
   // rescrition routes
   @Post("/rescritpions/:userId")
   async create(@Param("userId") userId: number, @Body() body) {
+      console.log('helllo')
     return this.medicalExamService.createRescription(body, userId);
   }
 
