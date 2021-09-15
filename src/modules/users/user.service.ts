@@ -1,24 +1,24 @@
-import { Inject, Injectable } from "@nestjs/common";
-import { User } from "./models/user.entity";
-import { UserRequests } from "./models/userRequests.entity";
-import * as nodemailer from "nodemailer";
-import * as jwt from "jsonwebtoken";
-import { MailOptionsDto } from "./dto/mail-options.dto";
-const { Op } = require("sequelize");
-import { MedicalFolderService } from "../medical-folder/medical-folder.service";
-import * as bcrypt from "bcrypt";
+import { Inject, Injectable } from '@nestjs/common';
+import { User } from './models/user.entity';
+import { UserRequests } from './models/userRequests.entity';
+import * as nodemailer from 'nodemailer';
+import * as jwt from 'jsonwebtoken';
+import { MailOptionsDto } from './dto/mail-options.dto';
+const { Op } = require('sequelize');
+import { MedicalFolderService } from '../medical-folder/medical-folder.service';
+import * as bcrypt from 'bcrypt';
 
-const chalk = require("chalk");
+const chalk = require('chalk');
 const error = chalk.bold.red;
-const warning = chalk.keyword("orange");
+const warning = chalk.keyword('orange');
 
 @Injectable()
 export class UserService {
   constructor(
     private readonly medicalFolderService: MedicalFolderService,
 
-    @Inject("UserRepository") private readonly userRepository: typeof User,
-    @Inject("UserRequestsRepository")
+    @Inject('UserRepository') private readonly userRepository: typeof User,
+    @Inject('UserRequestsRepository')
     private readonly userRequestsRepository: typeof UserRequests
   ) {}
 
@@ -30,7 +30,7 @@ export class UserService {
 
   public async sendMail(mailOptions: MailOptionsDto) {
     let transporter = nodemailer.createTransport({
-      service: "Gmail",
+      service: 'Gmail',
       auth: {
         user: process.env.MAIL_USER,
         pass: process.env.MAIL_PASS,
@@ -53,7 +53,7 @@ export class UserService {
     let users = await this.userRepository.findAndCountAll({
       limit: Number(items),
       offset: Number(pageNumber) * Number(items),
-      attributes: { exclude: ["password"] },
+      attributes: { exclude: ['password'] },
     });
 
     return users;
@@ -68,22 +68,22 @@ export class UserService {
       if (password === passwordConfirmation) {
         let user = await this.findUserById(userId);
         if (user) {
-          user.token = "";
+          user.token = '';
           let hashedPassword = await bcrypt.hash(password, 10);
           user.password = hashedPassword;
           user.save();
-          return { status: "success", body: "password updated successfully" };
+          return { status: 'success', body: 'password updated successfully' };
         }
       }
       return {
-        status: "failed",
+        status: 'failed',
         body: "password doesn't match the confirmation password",
       };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured , please try again later",
+        status: 'failed',
+        body: 'an error occured , please try again later',
       };
     }
   }
@@ -94,16 +94,14 @@ export class UserService {
       let user = await this.userRepository.findOne({
         where: { token: token },
       });
-      user.status = "actif";
-      user.token = "";
+      user.status = 'actif';
       user.save();
       delete user.password;
-      delete user.token;
       this.medicalFolderService.create(user.id);
-      return { status: "sucess", body: user };
+      return { status: 'success', body: user };
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "an error occured" };
+      return { status: 'failed', body: 'an error occured' };
     }
   }
 
@@ -119,14 +117,14 @@ export class UserService {
         user.password = undefined;
         user.token = undefined;
         return {
-          status: "success",
+          status: 'success',
           body: { user, medicalFolder },
         };
       }
-      return { status: "failed", body: "user doesn't exists" };
+      return { status: 'failed', body: "user doesn't exists" };
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "An error occured , try later" };
+      return { status: 'failed', body: 'An error occured , try later' };
     }
   }
 
@@ -136,7 +134,7 @@ export class UserService {
       let users = await this.get(Number(page), Number(items));
 
       return {
-        status: "success",
+        status: 'success',
         body: {
           count: users.count,
           users: users.rows,
@@ -146,7 +144,7 @@ export class UserService {
       };
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "An error occured , try later" };
+      return { status: 'failed', body: 'An error occured , try later' };
     }
   }
 
@@ -154,7 +152,7 @@ export class UserService {
     try {
       let user = await this.findUserById(id);
       if (!user)
-        return { status: "failed", body: "user doesen't exist successfuly" };
+        return { status: 'failed', body: "user doesen't exist successfuly" };
       const {
         firstname,
         lastname,
@@ -184,7 +182,7 @@ export class UserService {
       user.groupe = groupe || user.groupe;
 
       user.save();
-      return { status: "success", body: user };
+      return { status: 'success', body: user };
     } catch (err) {
       console.log(error(err.message));
     }
@@ -199,17 +197,17 @@ export class UserService {
       //if the email doesn't exist _ create new user and send the confirmation mail _
       if (!user) {
         //generate confirmation token
-        const token = jwt.sign({ email: newUser.email }, "secret");
+        const token = jwt.sign({ email: newUser.email }, 'secret');
 
         //create new user with pending status
         this.create({ ...newUser, token: token });
 
         //send the confirmation mail
         let mailOptions = {
-          from: "no-reply@gmail.com",
+          from: 'no-reply@gmail.com',
           to: newUser.email,
-          subject: "Verify Email",
-          text: "Verify Email",
+          subject: 'Verify Email',
+          text: 'Verify Email',
           html: `<h1>Email Confirmation</h1>
                 <h2>Hello ${newUser.firstname} ${newUser.lastname}</h2>
                 <p>Thank you for subscribing. Please confirm your email by clicking on the following link</p>
@@ -218,14 +216,14 @@ export class UserService {
         };
         this.sendMail(mailOptions);
 
-        return { status: "success", body: "user created successfuly" };
+        return { status: 'success', body: 'user created successfuly' };
       }
-      return { status: "failed", body: "this email already exists" };
+      return { status: 'failed', body: 'this email already exists' };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured , please try again later",
+        status: 'failed',
+        body: 'an error occured , please try again later',
       };
     }
   }
@@ -238,19 +236,19 @@ export class UserService {
       // if user not fount
       if (!user) {
         return {
-          status: "failed",
+          status: 'failed',
           body: "account doesn't exist",
         };
       }
 
-      const token = jwt.sign({ userId: user.id }, "secret");
+      const token = jwt.sign({ userId: user.id }, 'secret');
       user.token = token;
       user.save();
       let mailOptions = {
-        from: "no-reply@gmail.com",
+        from: 'no-reply@gmail.com',
         to: email,
-        subject: "reset password",
-        text: "reset passwordt",
+        subject: 'reset password',
+        text: 'reset passwordt',
         html: `<h1>Reset Password</h1>
             <h2>Hello ${user.firstname} ${user.lastname}</h2>
             <p> Please reset your password by clicking on the following link</p>
@@ -260,14 +258,14 @@ export class UserService {
 
       this.sendMail(mailOptions);
       return {
-        status: "success",
-        body: "please check your mail",
+        status: 'success',
+        body: 'please check your mail',
       };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured , please try again later",
+        status: 'failed',
+        body: 'an error occured , please try again later',
       };
     }
   }
@@ -281,14 +279,10 @@ export class UserService {
   ) {
     try {
       let user = await this.findUserById(userId);
-      let decodedToken = jwt.verify(token, "secret");
+      let decodedToken = jwt.verify(token, 'secret');
 
-      if (
-        !(
-          user.token === token && Object(decodedToken).userId === Number(userId)
-        )
-      )
-        return { status: "failed", body: "invalid link" };
+      if (!(user.token === token))
+        return { status: 'failed', body: 'invalid link' };
 
       return await this.updatePassword(userId, password, passwordConfirmation);
     } catch (err) {
@@ -303,8 +297,8 @@ export class UserService {
       let user = await this.findUserByEmail(email);
       if (user)
         return {
-          status: "failed",
-          body: "this email is already used by another user",
+          status: 'failed',
+          body: 'this email is already used by another user',
         };
 
       let request = await this.userRequestsRepository.findOne({
@@ -318,19 +312,19 @@ export class UserService {
           email,
         });
         return {
-          status: "success",
-          body: "registration request sent successfuly",
+          status: 'success',
+          body: 'registration request sent successfuly',
         };
       }
       return {
-        status: "failed",
-        body: "registration request for this user already exist",
+        status: 'failed',
+        body: 'registration request for this user already exist',
       };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured, please try agian later",
+        status: 'failed',
+        body: 'an error occured, please try agian later',
       };
     }
   }
@@ -340,7 +334,7 @@ export class UserService {
       let request = await this.userRequestsRepository.findByPk(id);
       if (!request)
         return {
-          success: "failed",
+          success: 'failed',
           body: "this registration request doesn't exist",
         };
       const newUser = {
@@ -353,14 +347,14 @@ export class UserService {
       this.userRequestsRepository.destroy({ where: { id: id } });
 
       return {
-        success: "success",
-        body: "registration request accepted successfuly",
+        success: 'success',
+        body: 'registration request accepted successfuly',
       };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured, please try agian later",
+        status: 'failed',
+        body: 'an error occured, please try agian later',
       };
     }
   }
@@ -370,19 +364,19 @@ export class UserService {
       let request = await this.userRequestsRepository.findByPk(id);
       if (!request)
         return {
-          success: "failed",
+          success: 'failed',
           body: "this registration request doesn't exist",
         };
       await this.userRequestsRepository.destroy({ where: { id: id } });
       return {
-        success: "success",
-        body: "registration request declined successfuly",
+        success: 'success',
+        body: 'registration request declined successfuly',
       };
     } catch (err) {
       console.log(error(err.message));
       return {
-        status: "failed",
-        body: "an error occured, please try agian later",
+        status: 'failed',
+        body: 'an error occured, please try agian later',
       };
     }
   }
@@ -395,7 +389,7 @@ export class UserService {
       });
       const count = await this.userRequestsRepository.count();
       return {
-        status: "success",
+        status: 'success',
         body: {
           count: requests.count,
           requests: requests.rows,
@@ -405,7 +399,7 @@ export class UserService {
       };
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "An error occured , try later" };
+      return { status: 'failed', body: 'An error occured , try later' };
     }
   }
 
@@ -415,36 +409,36 @@ export class UserService {
       //check if there is minimum one parametre
       const isEmpty = Object.values(userParams).every(
         (attribute) =>
-          attribute === null || attribute === "" || attribute === undefined
+          attribute === null || attribute === '' || attribute === undefined
       );
 
       //if qeuery it empty init firstname with dollar to make sure users=[]
       if (isEmpty) {
-        userParams.firstname = "$";
+        userParams.firstname = '$';
       }
 
       //searching with params if null use % to give all values
       const users = await this.userRepository.findAll({
         where: {
           [Op.and]: {
-            firstname: { [Op.like]: userParams.firstname || "%" },
-            lastname: { [Op.like]: userParams.lastname || "%" },
-            email: { [Op.like]: userParams.email || "%" },
-            gender: { [Op.like]: userParams.gender || "%" },
-            birthPlace: { [Op.like]: userParams.birthPlace || "%" },
-            address: { [Op.like]: userParams.address || "%" },
-            age: { [Op.like]: userParams.age || "%" },
-            speciality: { [Op.like]: userParams.speciality || "%" },
-            avaialable: { [Op.like]: userParams.avaialable || "%" },
-            phone: { [Op.like]: userParams.phone || "%" },
-            typePatient: { [Op.like]: userParams.typePatient || "%" },
-            status: { [Op.like]: userParams.status || "%" },
+            firstname: { [Op.like]: userParams.firstname || '%' },
+            lastname: { [Op.like]: userParams.lastname || '%' },
+            email: { [Op.like]: userParams.email || '%' },
+            gender: { [Op.like]: userParams.gender || '%' },
+            birthPlace: { [Op.like]: userParams.birthPlace || '%' },
+            address: { [Op.like]: userParams.address || '%' },
+            age: { [Op.like]: userParams.age || '%' },
+            speciality: { [Op.like]: userParams.speciality || '%' },
+            avaialable: { [Op.like]: userParams.avaialable || '%' },
+            phone: { [Op.like]: userParams.phone || '%' },
+            typePatient: { [Op.like]: userParams.typePatient || '%' },
+            status: { [Op.like]: userParams.status || '%' },
           },
         },
       });
 
       if (users.length == 0) {
-        return { status: "failed", body: "user not found" };
+        return { status: 'failed', body: 'user not found' };
       } else {
         //hiding user passwords
         users.forEach((user) => {
@@ -455,31 +449,31 @@ export class UserService {
       }
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "bad params" };
+      return { status: 'failed', body: 'bad params' };
     }
   }
 
   public async archive(id: number) {
     try {
       let user = await this.findUserById(id);
-      if (!user) return { status: "failed", body: "this account doesnt exist" };
-      if (user.status === "pendind")
+      if (!user) return { status: 'failed', body: 'this account doesnt exist' };
+      if (user.status === 'pendind')
         return {
-          status: "failed",
-          body: "this account is on pendind situation",
+          status: 'failed',
+          body: 'this account is on pendind situation',
         };
-      if (user.status === "archived")
+      if (user.status === 'archived')
         return {
-          status: "failed",
-          body: "this account was already archived before ",
+          status: 'failed',
+          body: 'this account was already archived before ',
         };
-      user.status = "archived";
+      user.status = 'archived';
       await user.save();
 
-      return { status: "success", body: "account archived successfuly" };
+      return { status: 'success', body: 'account archived successfuly' };
     } catch (err) {
       console.log(error(err.message));
-      return { status: "failed", body: "An error occured , try later" };
+      return { status: 'failed', body: 'An error occured , try later' };
     }
   }
 }
