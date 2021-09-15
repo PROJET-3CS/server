@@ -10,18 +10,28 @@ export class appointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
-  @Roles('admin')
+
+  @Roles("admin")
   async createAppointment(@Body() appointment) {
     return this.appointmentService.createAppointment(appointment);
   }
 
   @Get()
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   async getAll_Appointment() {
     return this.appointmentService.getAll_Appointment();
   }
 
   //get my appoitnment
   @Get("/:id")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
+  @Roles("patient")
   @ApiCreatedResponse({
     description:
       "pass UserId as params to get all his appointments (both Patient & doctor)",
@@ -30,7 +40,11 @@ export class appointmentController {
     return this.appointmentService.my_appointment(id);
   }
 
+
   @Post("ask_for_appointment")
+  
+  @Roles("admin")
+  @Roles("patient")
   @ApiCreatedResponse({ description: "ask for appointment as Patient" })
   async appointmentRequest(
     @Body("patientId") patientId: number,
@@ -48,7 +62,12 @@ export class appointmentController {
     });
   }
 
+
   @Post("accept_appointment/:appointmentId")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "accept appointment, required :appointmentId, doctorId, date, start_time, end_time",
@@ -71,7 +90,12 @@ export class appointmentController {
     });
   }
 
+
   @Post("demand_appointment")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "demand Appointment to a one patient with his email or his Id (not both)",
@@ -96,7 +120,12 @@ export class appointmentController {
     });
   }
 
+
   @Post("demand_appointment_collectif")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "demand Appointment collectif with emailList[] or (Promo & groupe) not both",
@@ -123,7 +152,12 @@ export class appointmentController {
     });
   }
 
+
   @Post("edit_appointment/:appointment_type/:AppointmentId")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({ description: "Edit Appointment" })
   async EditAppointment(
     @Param("AppointmentId") AppointmentId: number,
@@ -161,27 +195,35 @@ export class appointmentController {
     };
   }
 
+
   @Delete("cancel_appointment/:appointment_type/:AppointmentId")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({ description: "Cancel or Delete an Appointment" })
   async cancelAppointment(
     @Param("AppointmentId") AppointmentId: number,
     @Param("appointment_type") appointment_type: string
-    ) {
-      if (appointment_type === "0") {
-        return this.appointmentService.cancelAppointment(AppointmentId);
-      }
-      else if (appointment_type === "1"){
-        return this.appointmentService.cancelCollAppointment(AppointmentId);
-      }
-      else{
-        return {
-          status: "failed",
-          body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
-        }; 
-      }
+  ) {
+    if (appointment_type === "0") {
+      return this.appointmentService.cancelAppointment(AppointmentId);
+    } else if (appointment_type === "1") {
+      return this.appointmentService.cancelCollAppointment(AppointmentId);
+    } else {
+      return {
+        status: "failed",
+        body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
+      };
+    }
   }
 
+
   @Post("archive_appointment/:appointment_type/:AppointmentId")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   @ApiCreatedResponse({
     description: "Archive Appointment after patient pass it",
   })
@@ -193,12 +235,11 @@ export class appointmentController {
       return this.appointmentService.archiveAppointment(AppointmentId);
     } else if (appointment_type === "1") {
       return this.appointmentService.archiveCollAppointment(AppointmentId);
-    }
-    else{
+    } else {
       return {
         status: "failed",
         body: "verify your route params (appointment_type= 0 for individuel appointment =1 for collectif one)",
-      }; 
+      };
     }
   }
 }

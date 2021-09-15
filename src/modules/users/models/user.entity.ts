@@ -75,11 +75,8 @@ export class User extends Model {
   })
   status: String;
 
-  @Column({
-    type: DataType.ENUM("admin", "doctor", "patient", "assistant"),
-    defaultValue: "patient",
-  })
-  role: String;
+  @Column
+  role: Number;
 
   @Column
   age: Number;

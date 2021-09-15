@@ -8,6 +8,7 @@ import {
   Query,
 } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { Roles } from "src/guards/ roles.decorator";
 import { MedicalExamService } from "./medical-exam.service";
 
 @ApiTags("medical_exam")
@@ -16,6 +17,10 @@ export class MedicalExamController {
   constructor(private readonly medicalExamService: MedicalExamService) {}
 
   @Post("/:userId")
+
+  @Roles("admin")
+  @Roles("doctor")
+  @Roles("assistant")
   async cretaeMedicalExam(@Param("userId") userId: number, @Body() body) {
     return await this.medicalExamService.create(userId, body);
   }
