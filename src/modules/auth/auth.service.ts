@@ -30,19 +30,22 @@ export class AuthService {
       //safeCoding ES6 take only email,pwd
       const { email, password, deviceToken} = loginObject;
 
-      // const hashedPwd = await bcrypt.hash(password, 10);
+      const hashedPwd = await bcrypt.hash(password, 10);
 
       
       const user = await this.userRepository.findOne({
         where: {
-          [Op.and]: [{ email: email }, { password: password }],
+          [Op.and]: [{ email: email }],
         },
       });
 
+      const pwd:string = String(user.password)
+
       //if user not found throw Unauthorized Error
-      if (!user) {
+      if (!user || !bcrypt.compareSync(password,pwd)) {
         throw new UnauthorizedException();
       } else {
+
 
         //payload JWT
         const payload = {
@@ -53,7 +56,7 @@ export class AuthService {
 
         var token = jwt.sign(
           payload,
-          process.env.JWT_KEY || "JWT_KEY",
+          process.env.JWT_PRIVATE_KEY || "JWT_KEY",
           this._options
         );
 

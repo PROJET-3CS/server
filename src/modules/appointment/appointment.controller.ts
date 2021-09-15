@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from "@nestjs/common";
 import { ApiCreatedResponse, ApiTags } from "@nestjs/swagger";
 import { AppointmentService } from "./appointment.service";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
+import { Roles } from "../../guards/ roles.decorator";
 
 @ApiTags("appointment management")
 @Controller("appointment")

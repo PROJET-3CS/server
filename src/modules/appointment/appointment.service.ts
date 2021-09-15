@@ -6,6 +6,7 @@ import { Appointment } from "./models/appointment.entity";
 import { AppoinStatus } from "src/shared/enums/AppoinStatus.enum";
 import { User } from "../users/models/user.entity";
 import { CollectifAppointment } from "./models/collectifAppointment.entity";
+import { NotificationService } from "../notification/notification.service";
 import { Attendance } from "./models/attendance.etity";
 const { Op } = require("sequelize");
 
@@ -23,6 +24,7 @@ const serviceAccount = require("../../shared/adminSdk_firebase.json");
 @Injectable()
 export class AppointmentService {
   constructor(
+    private readonly NotificationService: NotificationService,
     @Inject("AppointmentRepository")
     private readonly AppointmentRepository: typeof Appointment,
     @Inject("UserRepository")
@@ -37,6 +39,8 @@ export class AppointmentService {
     });
   }
 
+
+  //********Private methodes */
   private async doctorAvailability(
     start_time,
     end_time,
@@ -54,11 +58,17 @@ export class AppointmentService {
     } else return false;
   }
 
-  private async sendNotif(title: string, body: string, token: String) {
+  private async sendNotif(
+    title: string,
+    body: string,
+    token: String,
+    userId: Number
+  ) {
+    this.NotificationService.saveNotification(title, body, token, userId);
+    const deviceToken: string = String(token);
     var message = {
       notification: { title: title, body: body },
-      token:
-        "dOKe-QtUJXDY_OWT5Mti2V:APA91bHjgfNkqUJ8D2UXAeghDS980ljPQ3azg0Ft3uQapL5Z4TOuVYBwEoGmY_Yr5dTOADqUQFAL7s6j3jgAeOR7W2Yg4QoELttc52A32tjYpZ6cekselZ4dMsXv0gzYWTbpoXgssNBl",
+      token: deviceToken,
     };
     admin
       .messaging()
@@ -66,12 +76,30 @@ export class AppointmentService {
       .then((response) => {
         // Response is a message ID string.
         console.log("Successfully sent message:", response);
+        return {
+          success: "success",
+          body: response,
+        };
       })
       .catch((error) => {
         console.log("Error sending message:", error);
+        return {
+          success: "failed",
+          body: "error occured sending notification",
+        };
       });
   }
 
+  private async getAllAdminsAndDoctors() {
+    try {
+      const users = await this.userRepository.findAll({
+        where: {
+          role: 0 || 1,
+        },
+      });
+      return users;
+    } catch (error) {}
+  }
   private async creatAttendance(collAppointmentId, patientId) {
     try {
       const attendance = await this.AttendanceRepository.create({
@@ -95,6 +123,7 @@ export class AppointmentService {
     return user;
   }
 
+  //************** start end-points methodes */
   public async createAppointment(appointment) {
     try {
       var { doctorId, patientId, description, date, start_time, end_time } =
@@ -180,6 +209,14 @@ export class AppointmentService {
         end_time,
       });
 
+      const AdminsDoctors = await this.getAllAdminsAndDoctors() 
+      
+      if (AdminsDoctors) {
+        AdminsDoctors.forEach(user => {
+          this.sendNotif('Appointment request', 'You have a new appointment request', user.deviceToken, user.id)
+        });
+      }
+
       //change Status (accepted, refused, archived, SentByPatient,SentByDoctor)
       appointment.status = AppoinStatus.SentByPatient;
       appointment.save();
@@ -226,7 +263,8 @@ export class AppointmentService {
         this.sendNotif(
           "Accept Appointment",
           `Your Appointment is Accepted Date : ${appointment.date} from ${start_time} to ${end_time} with Doctor ${doctor.lastname} Please respect that time`,
-          patient.deviceToken
+          patient.deviceToken,
+          patient.id
         );
         let mailOptions = {
           from: process.env.MAIL_USER,
@@ -337,7 +375,8 @@ export class AppointmentService {
           this.sendNotif(
             "Demand Appointment",
             `Your invited to an Appointment Date : ${Appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-            user.deviceToken
+            user.deviceToken,
+            user.id
           );
           //send mail
           let mailOptions = {
@@ -436,7 +475,8 @@ export class AppointmentService {
               this.sendNotif(
                 "Collectif Appointment",
                 `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-                patient.deviceToken
+                patient.deviceToken,
+                patient.id
               );
 
               let promoGrpMails = {
@@ -476,7 +516,8 @@ export class AppointmentService {
                 this.sendNotif(
                   "Collectif Appointment",
                   `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-                  user.deviceToken
+                  user.deviceToken,
+                  user.id
                 );
 
                 let collectifMail = {
@@ -547,7 +588,8 @@ export class AppointmentService {
       this.sendNotif(
         "Change Appointment",
         `Your Appointment is Edited Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time ${description}`,
-        patient.deviceToken
+        patient.deviceToken,
+        patient.id
       );
 
       let rdvChanges = {
@@ -605,7 +647,8 @@ export class AppointmentService {
         this.sendNotif(
           "Change Appointment",
           `Your Appointment is Changed Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-          patient.deviceToken
+          patient.deviceToken,
+          patient.id
         );
 
         let rdvChanges = {

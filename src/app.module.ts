@@ -5,14 +5,25 @@ import { AuthMiddleware } from "./utils/middleware/auth.middleware";
 import { MedicalFolderModule } from "./modules/medical-folder/medical-folder.module";
 import { AppointmentModule } from "./modules/appointment/appointment.module";
 import { MedicalExamModule } from "./modules/medical-exam/medical-exam.module";
+import { NotificationModule } from "./modules/notification/notification.module";
+import { APP_GUARD } from '@nestjs/core';
+import { RolesGuard } from "./guards/admin.guard";
+
 
 @Module({
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
   imports: [
     UserModule,
     AuthModule,
     MedicalFolderModule,
     AppointmentModule,
     MedicalExamModule,
+    NotificationModule
   ],
 })
 export class AppModule {

@@ -15,6 +15,7 @@ import { Attendance } from "src/modules/appointment/models/attendance.etity";
 import { CollectifAppointment } from "src/modules/appointment/models/collectifAppointment.entity";
 import { MedicalExam } from "src/modules/medical-exam/models/medical-exam.entity";
 import { Rescription } from "src/modules/medical-exam/models/rescription.entity";
+import { Notification } from "src/modules/notification/models/notification.entity";
 import { TypePatient } from "src/shared/enums/typePatient.enum";
 import { Gender } from "../../../shared/enums/gender.enum";
 
@@ -74,8 +75,11 @@ export class User extends Model {
   })
   status: String;
 
-  @Column({ type: DataType.INTEGER })
-  role: Number;
+  @Column({
+    type: DataType.ENUM("admin", "doctor", "patient", "assistant"),
+    defaultValue: "patient",
+  })
+  role: String;
 
   @Column
   age: Number;
@@ -111,6 +115,9 @@ export class User extends Model {
 
   @HasMany(() => Rescription)
   rescriptions: Rescription[];
+
+  @HasMany(() => Notification)
+  notifications: Notification[];
 
   @BelongsToMany(() => CollectifAppointment, {
     foreignKey: "id",
