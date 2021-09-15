@@ -15,6 +15,14 @@ import { CollectifAppointment } from "./collectifAppointment.entity";
   @Table
   export class Attendance extends Model {
 
+    @Column({
+      allowNull: false,
+      autoIncrement: true,
+      unique: true,
+      primaryKey: true,
+    })
+    public id: number;
+    
     @ForeignKey(() => User)
     @Column
     patientId: number

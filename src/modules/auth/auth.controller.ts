@@ -12,11 +12,7 @@ export class AuthController {
 
 
   @Post("login")
-  
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
-  @Roles("patient")
+
   public async login(@Body() body) {
     return this.authService.login(body);
   }

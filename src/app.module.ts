@@ -9,6 +9,7 @@ import { NotificationModule } from "./modules/notification/notification.module";
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from "./guards/admin.guard";
 
+import { ChatModule } from './modules/chat/chat.module';
 
 @Module({
   providers: [
@@ -23,7 +24,8 @@ import { RolesGuard } from "./guards/admin.guard";
     MedicalFolderModule,
     AppointmentModule,
     MedicalExamModule,
-    NotificationModule
+    NotificationModule,
+    ChatModule,
   ],
 })
 export class AppModule {

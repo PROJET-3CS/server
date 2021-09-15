@@ -11,10 +11,11 @@ import {
 } from "sequelize-typescript";
 import { MedicalFolder } from "src/modules/medical-folder/models/medical-folder.entity";
 import { User } from "src/modules/users/models/user.entity";
+import { MedicalExamDocumentType } from "src/shared/enums/MedicalExamDocumentType.enum";
 import { MedicalExam } from "./medical-exam.entity";
 
 @Table
-export class Rescription extends Model {
+export class MedicalExamDocument extends Model {
   @Column({
     allowNull: false,
     autoIncrement: true,
@@ -35,31 +36,16 @@ export class Rescription extends Model {
   @Column({ field: "docotor_id", type: DataType.INTEGER })
   doctorId: number;
 
-  //   this Column will be a stringified json which incluse an array of medicaments
-  @Column({ type: DataType.JSON })
-  medicaments: string;
+  @Column({
+    type: DataType.ENUM(
+      MedicalExamDocumentType.certificate,
+      MedicalExamDocumentType.orientation
+    ),
+  })
+  type: string;
 
-  // defining the model hooks
-  @BeforeUpdate
-  @BeforeCreate
-  static convertMedicamentsToString(instance: Rescription) {
-    // this will be called when an instance is created or updated
-
-    instance.medicaments = JSON.stringify(instance.medicaments);
-  }
-
-  @AfterFind
-  static async convertMedicamentsToJson(instances: Rescription[]) {
-    // this will be called when an instance(s) is(are) fetched
-    // it will parse all the medicaments objects on all the instances
-    let convertedInstances: Rescription[] = [];
-    instances = JSON.parse(JSON.stringify(instances));
-    instances.forEach(async (instance, index) => {
-      instances[index].medicaments = await JSON.parse(
-        JSON.parse(instance.medicaments)
-      );
-    });
-  }
+  @Column({ type: DataType.TEXT })
+  content: string;
 
   // defining db relations
   @BelongsTo(() => MedicalFolder)

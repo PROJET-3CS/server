@@ -1,3 +1,4 @@
+import { MedicalExamDocument } from "./models/document.entity";
 import { MedicalExam } from "./models/medical-exam.entity";
 import { Rescription } from "./models/rescription.entity";
 
@@ -9,4 +10,9 @@ export const medicalExamProvider = {
 export const rescriptionProvider = {
   provide: "RescriptionRepository",
   useValue: Rescription,
+};
+
+export const medicalExamDocumentProvider = {
+  provide: "MedicalExamDocumentRepository",
+  useValue: MedicalExamDocument,
 };

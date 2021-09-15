@@ -176,15 +176,14 @@ export class AppointmentService {
         },
       });
 
-      var collectifAppointment = await this.userRepository.findAll({
-        where: { id: id },
-        attributes: { exclude: ["password", "token"] },
-        include: [{ model: CollectifAppointment }],
-      });
+      // var collectifAppointment = await this.userRepository.findAll({
+      //   where: { id: id },
+      //   attributes: { exclude: ["password", "token"] },
+      // });
 
       return {
         success: "success",
-        response: { appointment, collectifAppointment },
+        response: { appointment },
       };
     } catch (err) {
       console.log(error(err.message));

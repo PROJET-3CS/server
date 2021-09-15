@@ -38,6 +38,7 @@ export class MedicalExamController {
   // rescrition routes
   @Post("/rescritpions/:userId")
   async create(@Param("userId") userId: number, @Body() body) {
+      console.log('helllo')
     return this.medicalExamService.createRescription(body, userId);
   }
 
@@ -61,5 +62,36 @@ export class MedicalExamController {
       queries["doctorId"] = Number(doctorId);
     }
     return this.medicalExamService.getRescriptions(queries, page, items);
+  }
+
+  @Post("/documents/:userId")
+  async createDocument(@Param("userId") userId: number, @Body() body) {
+    return this.medicalExamService.createDocument(body, userId);
+  }
+
+  @Get("/documents")
+  async getDocuments(
+    @Query("medicalFolderId") medicalFolderId: number,
+    @Query("medicalExamId") medicalExamId: number,
+    @Query("doctorId") doctorId: number,
+    @Query("type") type: string,
+    @Query("page") page: number,
+    @Query("items") items: number
+  ) {
+    let queries = {};
+
+    if (typeof medicalExamId !== "undefined") {
+      queries["medicalExamId"] = Number(medicalExamId);
+    }
+    if (typeof medicalFolderId !== "undefined") {
+      queries["medicalFolderId"] = Number(medicalFolderId);
+    }
+    if (typeof doctorId !== "undefined") {
+      queries["doctorId"] = Number(doctorId);
+    }
+    if (typeof type !== "undefined") {
+      queries["type"] = Number(type);
+    }
+    return this.medicalExamService.getDocuments(queries, page, items);
   }
 }

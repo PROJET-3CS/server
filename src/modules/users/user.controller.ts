@@ -45,9 +45,8 @@ export class UserController {
   //get users with paginations
   @Get("?")
   async getUsers(@Query("page") page: number, @Query("items") items: number) {
-    console.log(items);
 
-    return await this.usersService.getUsers(page, items);
+    return await this.usersService.getUsers(Number(page), Number(items));
   }
 
   // create new user

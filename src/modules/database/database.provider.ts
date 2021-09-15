@@ -15,6 +15,10 @@ import { MedicalExam } from "../medical-exam/models/medical-exam.entity";
 import { Rescription } from "../medical-exam/models/rescription.entity";
 import { Notification } from "../notification/models/notification.entity";
 
+import { MedicalExamDocument } from "../medical-exam/models/document.entity";
+import { Conversation } from "../chat/models/conversation.entity";
+
+import { Message } from "../chat/models/message.entity";
 
 export const databaseProvider = {
   provide: "SequelizeInstance",
@@ -33,7 +37,10 @@ export const databaseProvider = {
       Attendance,
       MedicalExam,
       Rescription,
-      Notification
+      Notification,
+      MedicalExamDocument,
+      Conversation,
+      Message,
     ]);
     // await sequelize.sync({ force: true });
     return sequelize;
