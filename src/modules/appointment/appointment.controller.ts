@@ -10,6 +10,7 @@ export class appointmentController {
   constructor(private readonly appointmentService: AppointmentService) {}
 
   @Post()
+  @Roles('admin')
   async createAppointment(@Body() appointment) {
     return this.appointmentService.createAppointment(appointment);
   }
