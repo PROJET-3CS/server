@@ -8,6 +8,7 @@ import { User } from "../users/models/user.entity";
 import { CollectifAppointment } from "./models/collectifAppointment.entity";
 import { NotificationService } from "../notification/notification.service";
 import { Attendance } from "./models/attendance.etity";
+import { ENUM } from "sequelize/types";
 const { Op } = require("sequelize");
 
 dotenv.config();
@@ -359,6 +360,7 @@ export class AppointmentService {
             date,
             start_time,
             end_time,
+            status:AppoinStatus.Accepted
           });
 
           var user: User;
