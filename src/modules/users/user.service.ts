@@ -148,6 +148,19 @@ export class UserService {
     }
   }
 
+  // @ROUTE Get all users using pagination
+
+  /// temporaire sol to get all users
+  public async getAllUsers() {
+    try {
+     let allUsers= await this.userRepository.findAll()
+     return{status : "success" , body : allUsers}
+    } catch (err) {
+      console.log(error(err.message));
+      return { status: 'failed', body: 'An error occured , try later' };
+    }
+  }
+
   async updateUser(id: number, userUpdated) {
     try {
       let user = await this.findUserById(id);

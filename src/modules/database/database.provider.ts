@@ -39,7 +39,7 @@ export const databaseProvider = {
       Conversation,
       Message,
     ]);
-    await sequelize.sync({ force: true });
+    // await sequelize.sync({ force: true });
     return sequelize;
   },
 };

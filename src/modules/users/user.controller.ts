@@ -25,6 +25,11 @@ import { Gender } from "src/shared/enums/gender.enum";
 @Controller("users")
 export class UserController {
   constructor(private readonly usersService: UserService) {}
+  //temporaire
+  @Get('/all')
+  async getAllUsersRoute(){
+      return this.usersService.getAllUsers()
+  }
 
   //get user by id
   @ApiCreatedResponse({ type: UserDto })
@@ -43,11 +48,14 @@ export class UserController {
   }
 
   //get users with paginations
+  
   @Get("?")
   async getUsers(@Query("page") page: number, @Query("items") items: number) {
 
-    return await this.usersService.getUsers(Number(page), Number(items));
+    return  await this.usersService.getUsers(Number(page), Number(items));
   }
+
+  
 
   // create new user
   @Post()
