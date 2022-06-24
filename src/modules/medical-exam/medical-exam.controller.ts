@@ -18,9 +18,9 @@ export class MedicalExamController {
 
   @Post("/:userId")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   async cretaeMedicalExam(@Param("userId") userId: number, @Body() body) {
     return await this.medicalExamService.create(userId, body);
   }

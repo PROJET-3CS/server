@@ -11,16 +11,16 @@ export class appointmentController {
 
   @Post()
 
-  @Roles("admin")
+  //@Roles("admin")
   async createAppointment(@Body() appointment) {
     return this.appointmentService.createAppointment(appointment);
   }
 
   @Get()
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   async getAll_Appointment() {
     return this.appointmentService.getAll_Appointment();
   }
@@ -28,10 +28,10 @@ export class appointmentController {
   //get my appoitnment
   @Get("/:id")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
-  @Roles("patient")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
+  // @Roles("patient")
   @ApiCreatedResponse({
     description:
       "pass UserId as params to get all his appointments (both Patient & doctor)",
@@ -43,8 +43,8 @@ export class appointmentController {
 
   @Post("ask_for_appointment")
   
-  @Roles("admin")
-  @Roles("patient")
+  // @Roles("admin")
+  // @Roles("patient")
   @ApiCreatedResponse({ description: "ask for appointment as Patient" })
   async appointmentRequest(
     @Body("patientId") patientId: number,
@@ -65,9 +65,9 @@ export class appointmentController {
 
   @Post("accept_appointment/:appointmentId")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "accept appointment, required :appointmentId, doctorId, date, start_time, end_time",
@@ -93,9 +93,9 @@ export class appointmentController {
 
   @Post("demand_appointment")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "demand Appointment to a one patient with his email or his Id (not both)",
@@ -123,9 +123,9 @@ export class appointmentController {
 
   @Post("demand_appointment_collectif")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({
     description:
       "demand Appointment collectif with emailList[] or (Promo & groupe) not both",
@@ -155,9 +155,9 @@ export class appointmentController {
 
   @Post("edit_appointment/:appointment_type/:AppointmentId")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({ description: "Edit Appointment" })
   async EditAppointment(
     @Param("AppointmentId") AppointmentId: number,
@@ -198,9 +198,9 @@ export class appointmentController {
 
   @Delete("cancel_appointment/:appointment_type/:AppointmentId")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({ description: "Cancel or Delete an Appointment" })
   async cancelAppointment(
     @Param("AppointmentId") AppointmentId: number,
@@ -221,9 +221,9 @@ export class appointmentController {
 
   @Post("archive_appointment/:appointment_type/:AppointmentId")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
   @ApiCreatedResponse({
     description: "Archive Appointment after patient pass it",
   })

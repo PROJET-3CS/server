@@ -16,11 +16,11 @@ dotenv.config();
 const chalk = require("chalk");
 const error = chalk.bold.red;
 const warning = chalk.keyword("orange");
-const FCM = require("fcm-node");
-const SERVER_KEY =
-  "AAAAj1pr-tU:APA91bFiJ78ps5x1Mo9_uG8llFwUoeLSHTU-P1bgQHhLBec9rDT81Lvg1333SpTYnkNr5qbexP517NRihAc2JUVvSXYR0mQ7kWJvmUZDITTDwADbFo3j_EzR0YpwqzU5q3U8teDator_";
-import * as admin from "firebase-admin";
-const serviceAccount = require("../../shared/adminSdk_firebase.json");
+//const FCM = require("fcm-node");
+//const SERVER_KEY =
+//  "AAAAj1pr-tU:APA91bFiJ78ps5x1Mo9_uG8llFwUoeLSHTU-P1bgQHhLBec9rDT81Lvg1333SpTYnkNr5qbexP517NRihAc2JUVvSXYR0mQ7kWJvmUZDITTDwADbFo3j_EzR0YpwqzU5q3U8teDator_";
+//import * as admin from "firebase-admin";
+//const serviceAccount = require("../../shared/adminSdk_firebase.json");
 
 @Injectable()
 export class AppointmentService {
@@ -34,11 +34,7 @@ export class AppointmentService {
     private readonly AttendanceRepository: typeof Attendance,
     @Inject("CollectifAppointmentRepository")
     private readonly CollectifAppointmentRepository: typeof CollectifAppointment
-  ) {
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-    });
-  }
+  ) {}
 
 
   //********Private methodes */
@@ -59,37 +55,37 @@ export class AppointmentService {
     } else return false;
   }
 
-  private async sendNotif(
-    title: string,
-    body: string,
-    token: String,
-    userId: Number
-  ) {
-    this.NotificationService.saveNotification(title, body, token, userId);
-    const deviceToken: string = String(token);
-    var message = {
-      notification: { title: title, body: body },
-      token: deviceToken,
-    };
-    admin
-      .messaging()
-      .send(message)
-      .then((response) => {
-        // Response is a message ID string.
-        console.log("Successfully sent message:", response);
-        return {
-          success: "success",
-          body: response,
-        };
-      })
-      .catch((error) => {
-        console.log("Error sending message:", error);
-        return {
-          success: "failed",
-          body: "error occured sending notification",
-        };
-      });
-  }
+  // private async sendNotif(
+  //   title: string,
+  //   body: string,
+  //   token: String,
+  //   userId: Number
+  // ) {
+  //   this.NotificationService.saveNotification(title, body, token, userId);
+  //   const deviceToken: string = String(token);
+  //   var message = {
+  //     notification: { title: title, body: body },
+  //     token: deviceToken,
+  //   };
+  //   admin
+  //     .messaging()
+  //     .send(message)
+  //     .then((response) => {
+  //       // Response is a message ID string.
+  //       console.log("Successfully sent message:", response);
+  //       return {
+  //         success: "success",
+  //         body: response,
+  //       };
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error sending message:", error);
+  //       return {
+  //         success: "failed",
+  //         body: "error occured sending notification",
+  //       };
+  //     });
+  // }
 
   private async getAllAdminsAndDoctors() {
     try {
@@ -211,11 +207,11 @@ export class AppointmentService {
 
       const AdminsDoctors = await this.getAllAdminsAndDoctors() 
       
-      if (AdminsDoctors) {
-        AdminsDoctors.forEach(user => {
-          this.sendNotif('Appointment request', 'You have a new appointment request', user.deviceToken, user.id)
-        });
-      }
+      // if (AdminsDoctors) {
+      //   AdminsDoctors.forEach(user => {
+      //     this.sendNotif('Appointment request', 'You have a new appointment request', user.deviceToken, user.id)
+      //   });
+      // }
 
       //change Status (accepted, refused, archived, SentByPatient,SentByDoctor)
       appointment.status = AppoinStatus.SentByPatient;
@@ -260,12 +256,12 @@ export class AppointmentService {
           appointment.patientId
         );
 
-        this.sendNotif(
-          "Accept Appointment",
-          `Your Appointment is Accepted Date : ${appointment.date} from ${start_time} to ${end_time} with Doctor ${doctor.lastname} Please respect that time`,
-          patient.deviceToken,
-          patient.id
-        );
+        // this.sendNotif(
+        //   "Accept Appointment",
+        //   `Your Appointment is Accepted Date : ${appointment.date} from ${start_time} to ${end_time} with Doctor ${doctor.lastname} Please respect that time`,
+        //   patient.deviceToken,
+        //   patient.id
+        // );
         let mailOptions = {
           from: process.env.MAIL_USER,
           to: patient.email,
@@ -373,12 +369,12 @@ export class AppointmentService {
             user = await this.userRepository.findByPk(patientId);
           }
 
-          this.sendNotif(
-            "Demand Appointment",
-            `Your invited to an Appointment Date : ${Appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-            user.deviceToken,
-            user.id
-          );
+          // this.sendNotif(
+          //   "Demand Appointment",
+          //   `Your invited to an Appointment Date : ${Appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+          //   user.deviceToken,
+          //   user.id
+          // );
           //send mail
           let mailOptions = {
             from: process.env.MAIL_USER,
@@ -473,12 +469,12 @@ export class AppointmentService {
               //add record to junction table (appointment,patient)
               await this.creatAttendance(collAppointment.id, patient.id);
 
-              this.sendNotif(
-                "Collectif Appointment",
-                `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-                patient.deviceToken,
-                patient.id
-              );
+              // this.sendNotif(
+              //   "Collectif Appointment",
+              //   `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+              //   patient.deviceToken,
+              //   patient.id
+              // );
 
               let promoGrpMails = {
                 from: process.env.MAIL_USER,
@@ -514,12 +510,12 @@ export class AppointmentService {
               } else {
                 await this.creatAttendance(collAppointment.id, user.id);
 
-                this.sendNotif(
-                  "Collectif Appointment",
-                  `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-                  user.deviceToken,
-                  user.id
-                );
+                // this.sendNotif(
+                //   "Collectif Appointment",
+                //   `Your invited to an collectif Appointment Date : ${collAppointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+                //   user.deviceToken,
+                //   user.id
+                // );
 
                 let collectifMail = {
                   from: process.env.MAIL_USER,
@@ -586,12 +582,12 @@ export class AppointmentService {
         (appointment.end_time = end_time),
         appointment.save();
 
-      this.sendNotif(
-        "Change Appointment",
-        `Your Appointment is Edited Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time ${description}`,
-        patient.deviceToken,
-        patient.id
-      );
+      // this.sendNotif(
+      //   "Change Appointment",
+      //   `Your Appointment is Edited Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time ${description}`,
+      //   patient.deviceToken,
+      //   patient.id
+      // );
 
       let rdvChanges = {
         from: process.env.MAIL_USER,
@@ -645,12 +641,12 @@ export class AppointmentService {
         appointment.save();
 
       for (const patient of appointment["Attend"]) {
-        this.sendNotif(
-          "Change Appointment",
-          `Your Appointment is Changed Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
-          patient.deviceToken,
-          patient.id
-        );
+        // this.sendNotif(
+        //   "Change Appointment",
+        //   `Your Appointment is Changed Date : ${appointment.date} from ${start_time} to ${end_time}  Please respect that time`,
+        //   patient.deviceToken,
+        //   patient.id
+        // );
 
         let rdvChanges = {
           from: process.env.MAIL_USER,

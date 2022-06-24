@@ -28,10 +28,10 @@ export class AuthController {
 
   @Post("verify_token")
 
-  @Roles("admin")
-  @Roles("doctor")
-  @Roles("assistant")
-  @Roles("patient")
+  // @Roles("admin")
+  // @Roles("doctor")
+  // @Roles("assistant")
+  // @Roles("patient")
   public async verify_token(@Body() body) {
     return this.authService.verify_token(body.token);
   }

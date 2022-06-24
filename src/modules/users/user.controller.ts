@@ -107,7 +107,7 @@ export class UserController {
   // request registration by patient
   @Post("request")
   async requestRegistration(@Body() body) {
-    return this.usersService.requestRegistration(body);
+    return await this.usersService.createUserWithConfirmationToken(body);
   }
 
   // Accept request registration by patient

@@ -29,15 +29,27 @@ export class UserService {
   }
 
   public async sendMail(mailOptions: MailOptionsDto) {
-    let transporter = nodemailer.createTransport({
-      service: 'Gmail',
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
+    try {
+      let transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        service: 'Gmail',
+        auth: {
+          user: process.env.MAIL_USER,
+          pass: process.env.MAIL_PASS,
+        },
+      });
+      console.log("email sent");
 
-    await transporter.sendMail(mailOptions);
+  
+      await transporter.sendMail(mailOptions);
+
+      transporter.verify().then(console.log).catch(console.error);
+    } catch (error) {
+      console.log(error);
+      
+    }
+
   }
 
   async findUserByEmail(email: string): Promise<User> {

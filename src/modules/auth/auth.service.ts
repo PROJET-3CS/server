@@ -77,9 +77,11 @@ export class AuthService {
   public async verify_token(token: string): Promise<Object> {
     try {
       //verify if token is valid
+      console.log(token);
+      
       const isValid: Object = jwt.verify(
         token,
-        process.env.JWT_KEY || 'JWT_KEY'
+        process.env.JWT_PRIVATE_KEY || 'JWT_KEY'
       );
 
       let user;
@@ -89,10 +91,7 @@ export class AuthService {
 
         user = await this.userRepository.findOne({
           where: {
-            [Op.and]: [
-              { email: decoded.email },
-              { password: hashedPwd},
-            ],
+              email: decoded.email 
           },
         });
         
